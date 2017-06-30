@@ -7,9 +7,11 @@ CC=clang++
 default:
 	$(CC) $(SRC) $(OPTS) -o $(OUT)
 run:
+	clear
 	$(CC) $(SRC) $(OPTS) -o $(OUT)
 	./$(OUT)
 gdb:
+	clear
 	$(CC) $(SRC) $(OPTS) -o $(OUT)
 	echo "Starting GDB..\n";
 	gdb ./$(OUT)
