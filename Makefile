@@ -1,7 +1,7 @@
 SRC=$(wildcard src/*.cc src/*.cpp src/*.c)
 OUT=./utpp
 OPTS=-std=c++14 -luWS -lz -lssl -llz4 -lpthread -pthread -USE_LIBUV -ggdb
-# Use clang, change to use gcc instead
+# I'm using Clang, change to "g++" to use GCC
 CC=clang++
 
 default:
