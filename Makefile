@@ -1,11 +1,11 @@
 SRC=$(wildcard src/*.cc src/*.cpp src/*.c)
 OUT=./utpp
-OPTS=-std=c++14 -luWS -lz -lssl -llz4 -lpthread -pthread -USE_LIBUV -ggdb
+OPTS=-std=c++14 -luWS -lz -lssl -llz4 -lpthread -lcrypto -pthread -lpthread -USE_LIBUV -D CPPHTTPLIB_OPENSSL_SUPPORT -ggdb
 # I'm using Clang, change to "g++" to use GCC
 CC=clang++
 
 default:
-	$(CC) $(SRC) $(OPTS) -o $(OUT)
+	$(CC) $(OPTS) $(SRC) -o $(OUT)
 run:
 	clear
 	$(CC) $(SRC) $(OPTS) -o $(OUT)

@@ -335,6 +335,7 @@ socket_t create_socket(const char* host, int port, Fn fn)
     auto service = std::to_string(port);
 
     if (getaddrinfo(host, service.c_str(), &hints, &result)) {
+        printf("%s\n", "httplib: Failed to resolve host name.");
         return -1;
     }
 
@@ -1047,6 +1048,7 @@ inline bool Client::send(const Request& req, Response& res)
 {
     auto sock = detail::create_client_socket(host_.c_str(), port_);
     if (sock == -1) {
+        std::cout << "httplib: socket creation error\n";
         return false;
     }
 
