@@ -1,2 +1,2 @@
-# UltraType-
-A CLI bot for NitroType written in C++
+# UltraType++
+A bot for the online typing game NitroType written in C++
