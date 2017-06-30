@@ -50,6 +50,7 @@ typedef int socket_t;
 #include <functional>
 #include <map>
 #include <memory>
+#include <vector>
 #include <regex>
 #include <string>
 #include <sys/stat.h>
@@ -85,6 +86,7 @@ struct Response {
     int         status;
     MultiMap    headers;
     std::string body;
+    std::vector<std::string> cookies;
 
     bool has_header(const char* key) const;
     std::string get_header_value(const char* key) const;
@@ -480,13 +482,12 @@ inline int get_header_value_int(const MultiMap& map, const char* key, int def)
     return def;
 }
 
-inline bool read_headers(Stream& strm, MultiMap& headers)
+inline bool read_headers(Stream& strm, MultiMap& headers, std::vector<std::string>* cookies)
 {
     static std::regex re("(.+?): (.+?)\r\n");
 
-    const auto BUFSIZ_HEADER = 2048;
+    const auto BUFSIZ_HEADER = 4048;
     char buf[BUFSIZ_HEADER];
-
     for (;;) {
         if (!socket_gets(strm, buf, BUFSIZ_HEADER)) {
             return false;
@@ -499,9 +500,11 @@ inline bool read_headers(Stream& strm, MultiMap& headers)
             auto key = std::string(m[1]);
             auto val = std::string(m[2]);
             headers.insert(std::make_pair(key, val));
+            if (key == "Set-Cookie") {
+                cookies->push_back(val);
+            }
         }
     }
-
     return true;
 }
 
@@ -969,13 +972,14 @@ inline void Server::process_request(Stream& strm)
 {
     Request req;
     Response res;
-
+    /*
+    UltraType - Disabled, re enable to use as a server.
     if (!read_request_line(strm, req) ||
         !detail::read_headers(strm, req.headers)) {
         // TODO:
         return;
     }
-
+    */
     if (req.method == "POST") {
         if (!detail::read_content(strm, req)) {
             // TODO:
@@ -1040,7 +1044,6 @@ inline bool Client::read_response_line(Stream& strm, Response& res)
     if (std::regex_match(buf, m, re)) {
         res.status = std::stoi(std::string(m[1]));
     }
-
     return true;
 }
 
@@ -1062,7 +1065,7 @@ inline bool Client::process_request(Stream& strm, const Request& req, Response& 
 
     // Receive response
     if (!read_response_line(strm, res) ||
-        !detail::read_headers(strm, res.headers)) {
+        !detail::read_headers(strm, res.headers, &res.cookies)) {
         return false;
     }
     if (req.method != "HEAD") {
@@ -1085,7 +1088,7 @@ inline void Client::add_default_headers(Request& req)
 {
     req.set_header("Host", host_.c_str());
     req.set_header("Accept", "*/*");
-    req.set_header("User-Agent", "cpp-httplib/0.1");
+    req.set_header("User-Agent", "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36");
 }
 
 inline std::shared_ptr<Response> Client::get(const char* path)

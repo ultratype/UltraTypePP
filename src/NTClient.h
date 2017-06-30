@@ -5,6 +5,8 @@
 #include <vector>
 #include <string>
 #include <uWS/uWS.h>
+#include <map>
+#include <algorithm>
 using namespace std;
 using namespace nlohmann;
 using namespace uWS;
@@ -30,10 +32,9 @@ public:
 		data += pword;
 		data += "&adb=1&tz=America%2FChicago"; // No need to have anything other than Chicago timezone
 		httplib::SSLClient loginReq(NITROTYPE_HOSTNAME, HTTPS_PORT);
-		shared_ptr<httplib::Response> res = loginReq.post(NT_LOGIN_ENDPOINT, data, "application/x-www-form-urlencoded");
+		shared_ptr<httplib::Response> res = loginReq.post(NT_LOGIN_ENDPOINT, data, "application/x-www-form-urlencoded; charset=UTF-8");
 		if (res) {
-			cout << "Login request complete\n";
-			cout << res.get_header_value("set-cookie") << endl;
+			cout << res->cookies.size() << endl;
 		} else {
 			ret = false;
 			cout << "Login request failed. This might be a network issue. Maybe try resetting your internet connection?\n";
