@@ -33,6 +33,7 @@ public:
 		shared_ptr<httplib::Response> res = loginReq.post(NT_LOGIN_ENDPOINT, data, "application/x-www-form-urlencoded");
 		if (res) {
 			cout << "Login request complete\n";
+			cout << res.get_header_value("set-cookie") << endl;
 		} else {
 			ret = false;
 			cout << "Login request failed. This might be a network issue. Maybe try resetting your internet connection?\n";
