@@ -19,5 +19,5 @@ public:
 		pword = password;
 	}
 protected:
-	Hub ws;
+	Hub* ws;
 };
