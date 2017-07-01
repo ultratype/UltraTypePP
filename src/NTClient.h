@@ -23,9 +23,6 @@ using namespace uWS;
 class NTClient {
 public:
 	string uname;
-	string pword;
-	string token; // Login token
-	string loginCookie; // For outgoing requests that require authentication
 	NTClient(string username, string password) {
 		uname = username;
 		pword = password;
@@ -83,4 +80,7 @@ public:
 	}
 protected:
 	Hub* ws;
+	string token; // Login token
+	string loginCookie; // For outgoing requests that require authentication
+	string pword;
 };
