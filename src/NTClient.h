@@ -77,8 +77,17 @@ public:
 			cout << "Resolved primus SID: " << primusSid << endl;
 		} else {
 			cout << "Error retrieving primus handshake data.\n";
+			return false;
 		}
-		return false;
+		return true;
+	}
+	bool connect() {
+		if (!token || !primusSid) {
+			return false;
+		} else {
+			// TODO: connect to the realtime websocket server
+			return true;
+		}
 	}
 protected:
 	Hub* ws;
