@@ -14,6 +14,8 @@ using namespace nlohmann;
 using namespace uWS;
 
 #define NITROTYPE_HOSTNAME "www.nitrotype.com"
+#define NT_REALTIME_HOST "realtime1.nitrotype.com"
+#define NT_PRIMUS_ENDPOINT "/realtime/"
 #define NT_LOGIN_ENDPOINT "/api/login"
 #define HTTP_PORT 80
 #define HTTPS_PORT 443
@@ -23,6 +25,7 @@ public:
 	string uname;
 	string pword;
 	string token; // Login token
+	string loginCookie; // For outgoing requests that require authentication
 	NTClient(string username, string password) {
 		uname = username;
 		pword = password;
@@ -66,7 +69,16 @@ public:
 		stringstream squery;
 		squery << "?_primuscb=" << tnow << "-0&EIO=3&transport=polling&t=" << tnow << "-0&b64=1";
 		string queryStr = squery.str();
-		cout << queryStr << endl;
+
+		httplib::SSLClient loginReq(NT_REALTIME_HOST, HTTPS_PORT);
+		string path = NT_PRIMUS_ENDPOINT + queryStr;
+		loginCookie = "ntuserrem=" + token;
+		shared_ptr<httplib::Response> res = loginReq.get(path.c_str(), loginCookie);
+		if (res) {
+			cout << res->body << endl;
+		} else {
+			cout << "Error retrieving primus handshake data.\n";
+		}
 		return false;
 	}
 protected:
