@@ -15,6 +15,8 @@ using namespace uWS;
 
 #define NITROTYPE_HOSTNAME "www.nitrotype.com"
 #define NT_REALTIME_HOST "realtime1.nitrotype.com"
+// wss://realtime1.nitrotype.com/realtime/?_primuscb=1498950532425-0&EIO=3&transport=websocket&sid=FGGxSq9DqbZyy7Z_AwlQ&t=1498950532723&b64=1
+#define NT_REALTIME_WS_ENDPOINT "wss://realtime1.nitrotype.com/realtime/"
 #define NT_PRIMUS_ENDPOINT "/realtime/"
 #define NT_LOGIN_ENDPOINT "/api/login"
 #define HTTP_PORT 80
@@ -83,6 +85,11 @@ public:
 	}
 	bool connect() {
 		ws = new Hub();
+		time_t tnow = time(0);
+		stringstream uristream;
+		uristream  << NT_REALTIME_WS_ENDPOINT << "?_primuscb=" << tnow << "-0&EIO=3&transport=websocket&sid=" << primusSid << "&t=" << tnow << "-0&b64=1";
+		string wsURI = uristream.str();
+		cout << "Connecting to endpoint: " << wsURI << endl;
 		return true;
 	}
 protected:
