@@ -82,12 +82,8 @@ public:
 		return true;
 	}
 	bool connect() {
-		if (!token || !primusSid) {
-			return false;
-		} else {
-			// TODO: connect to the realtime websocket server
-			return true;
-		}
+		ws = new Hub();
+		return true;
 	}
 protected:
 	Hub* ws;
