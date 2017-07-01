@@ -81,6 +81,8 @@ public:
 		// Create cookie header
 		SMap cookieHeader;
 		cookieHeader["Cookie"] = loginCookie;
+		cookieHeader["Origin"] = "https://www.nitrotype.com";
+		cookieHeader["Host"] = "realtime1.nitrotype.com";
 		wsh->connect(wsURI, (void*)this, cookieHeader, 7000);
 		if (firstConnect) {
 			wsh->run();
@@ -135,7 +137,8 @@ protected:
 		});
 	}
 	void onConnection(WebSocket<CLIENT>* wsocket, HttpRequest req) {
-		//
+		// Send a probe, which is required for connection
+		wsocket->send("2probe");
 	}
 	void onDisconnection(WebSocket<CLIENT>* wsocket, int code, char* msg, size_t len) {
 		//
