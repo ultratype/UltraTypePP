@@ -8,6 +8,7 @@
 #include <uWS/uWS.h>
 #include <map>
 #include <algorithm>
+#include <ctime>
 using namespace std;
 using namespace nlohmann;
 using namespace uWS;
@@ -49,15 +50,19 @@ public:
 				}
 			}
 			if (!foundLoginCookie) {
+				ret = false;
 				cout << "Unable to locate the login cookie. Maybe try a different account?\n";
 			}
 		} else {
 			ret = false;
 			cout << "Login request failed. This might be a network issue. Maybe try resetting your internet connection?\n";
 		}
+		bool success = getPrimusSID();
+		if (!success) return false;
 		return ret;
 	}
-	bool primusRequest() {
+	bool getPrimusSID() {
+		time_t tnow = time(0);
 		return false;
 	}
 protected:
