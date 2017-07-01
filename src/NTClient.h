@@ -21,6 +21,8 @@ using namespace uWS;
 #define NT_LOGIN_ENDPOINT "/api/login"
 #define HTTP_PORT 80
 #define HTTPS_PORT 443
+typedef std::multimap<std::string, std::string> SMap;
+typedef std::pair<std::string, std::string> SPair;
 
 class NTClient {
 public:
@@ -86,23 +88,23 @@ public:
 		return true;
 	}
 	void addListeners() {
-		assert(ws == nullptr);
-		ws->onError([this](void* udata) {
+		assert(wsh != nullptr);
+		wsh->onError([this](void* udata) {
 			cout << "Failed to connect to WebSocket server." << endl;
 			hasError = true;
 		});
-		ws->onConnection([this](WebSocket<CLIENT>* wsocket, HttpRequest req) {
+		wsh->onConnection([this](WebSocket<CLIENT>* wsocket, HttpRequest req) {
 			cout << "Connected to the realtime server." << endl;
 		});
-		ws->onDisconnection([this](WebSocket<CLIENT>* wsocket, int code, char* msg, size_t len) {
+		wsh->onDisconnection([this](WebSocket<CLIENT>* wsocket, int code, char* msg, size_t len) {
 			cout << "Disconnected from the realtime server." << endl;
 		});
-		ws->onMessage([this](WebSocket<SERVER>* ws, char* msg, size_t len, OpCode opCode) {
+		wsh->onMessage([this](WebSocket<SERVER>* ws, char* msg, size_t len, OpCode opCode) {
 			cout << "ws message" << endl; // TODO: parse incoming messages
 		});
 	}
 	bool connect() {
-		ws = new Hub();
+		wsh = new Hub();
 		time_t tnow = time(0);
 		stringstream uristream;
 		uristream  << NT_REALTIME_WS_ENDPOINT << "?_primuscb=" << tnow << "-0&EIO=3&transport=websocket&sid=" << primusSid << "&t=" << tnow << "-0&b64=1";
@@ -115,7 +117,7 @@ public:
 		return true;
 	}
 protected:
-	Hub* ws;
+	Hub* wsh;
 	string token; // Login token
 	string loginCookie; // For outgoing requests that require authentication
 	string pword;
