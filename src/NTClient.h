@@ -114,6 +114,9 @@ public:
 			firstConnect = false;
 			addListeners();
 		}
+		// Create cookie header
+		SMap cookieHeader;
+		cookieHeader.insert(SPair("Cookie", loginCookie));
 		return true;
 	}
 protected:
