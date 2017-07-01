@@ -96,22 +96,6 @@ protected:
 	string primusSid;
 	bool hasError;
 	bool firstConnect;
-	void addListeners() {
-		assert(wsh != nullptr);
-		wsh->onError([this](void* udata) {
-			cout << "Failed to connect to WebSocket server." << endl;
-			hasError = true;
-		});
-		wsh->onConnection([this](WebSocket<CLIENT>* wsocket, HttpRequest req) {
-			cout << "Connected to the realtime server." << endl;
-		});
-		wsh->onDisconnection([this](WebSocket<CLIENT>* wsocket, int code, char* msg, size_t len) {
-			cout << "Disconnected from the realtime server." << endl;
-		});
-		wsh->onMessage([this](WebSocket<SERVER>* ws, char* msg, size_t len, OpCode opCode) {
-			cout << "ws message" << endl; // TODO: parse incoming messages
-		});
-	}
 	bool getPrimusSID() {
 		time_t tnow = time(0);
 		stringstream squery;
@@ -132,7 +116,31 @@ protected:
 		}
 		return true;
 	}
+	void addListeners() {
+		assert(wsh != nullptr);
+		wsh->onError([this](void* udata) {
+			cout << "Failed to connect to WebSocket server." << endl;
+			hasError = true;
+		});
+		wsh->onConnection([this](WebSocket<CLIENT>* wsocket, HttpRequest req) {
+			cout << "Connected to the realtime server." << endl;
+			onConnection(wsocket, req);
+		});
+		wsh->onDisconnection([this](WebSocket<CLIENT>* wsocket, int code, char* msg, size_t len) {
+			cout << "Disconnected from the realtime server." << endl;
+			onDisconnection(wsocket, code, msg, len);
+		});
+		wsh->onMessage([this](WebSocket<SERVER>* ws, char* msg, size_t len, OpCode opCode) {
+			onMessage(ws, msg, len, opCode);
+		});
+	}
 	void onConnection(WebSocket<CLIENT>* wsocket, HttpRequest req) {
 		//
+	}
+	void onDisconnection(WebSocket<CLIENT>* wsocket, int code, char* msg, size_t len) {
+		//
+	}
+	void onMessage(WebSocket<SERVER>* ws, char* msg, size_t len, OpCode opCode) {
+		cout << "ws message" << endl; // TODO: parse incoming messages
 	}
 };
