@@ -28,6 +28,8 @@ public:
 	NTClient(string username, string password) {
 		uname = username;
 		pword = password;
+		hasError = false;
+		firstConnect = true;
 	}
 	bool login() {
 		bool ret = true;
@@ -83,6 +85,22 @@ public:
 		}
 		return true;
 	}
+	void addListeners() {
+		assert(ws == nullptr);
+		ws->onError([this](void* udata) {
+			cout << "Failed to connect to WebSocket server." << endl;
+			hasError = true;
+		});
+		ws->onConnection([this](WebSocket<CLIENT>* wsocket, HttpRequest req) {
+			cout << "Connected to the realtime server." << endl;
+		});
+		ws->onDisconnection([this](WebSocket<CLIENT>* wsocket, int code, char* msg, size_t len) {
+			cout << "Disconnected from the realtime server." << endl;
+		});
+		ws->onMessage([this](WebSocket<SERVER>* ws, char* msg, size_t len, OpCode opCode) {
+			cout << "ws message" << endl; // TODO: parse incoming messages
+		});
+	}
 	bool connect() {
 		ws = new Hub();
 		time_t tnow = time(0);
@@ -90,6 +108,10 @@ public:
 		uristream  << NT_REALTIME_WS_ENDPOINT << "?_primuscb=" << tnow << "-0&EIO=3&transport=websocket&sid=" << primusSid << "&t=" << tnow << "-0&b64=1";
 		string wsURI = uristream.str();
 		cout << "Connecting to endpoint: " << wsURI << endl;
+		if (firstConnect) {
+			firstConnect = false;
+			addListeners();
+		}
 		return true;
 	}
 protected:
@@ -98,4 +120,6 @@ protected:
 	string loginCookie; // For outgoing requests that require authentication
 	string pword;
 	string primusSid;
+	bool hasError;
+	bool firstConnect;
 };
