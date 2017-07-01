@@ -26,11 +26,13 @@ typedef std::map<std::string, std::string> SMap;
 class NTClient {
 public:
 	string uname;
+	bool connected;
 	NTClient(string username, string password) {
 		uname = username;
 		pword = password;
 		hasError = false;
 		firstConnect = true;
+		connected = false;
 	}
 	bool login() {
 		bool ret = true;
@@ -66,42 +68,6 @@ public:
 		if (!success) return false;
 		return ret;
 	}
-	bool getPrimusSID() {
-		time_t tnow = time(0);
-		stringstream squery;
-		squery << "?_primuscb=" << tnow << "-0&EIO=3&transport=polling&t=" << tnow << "-0&b64=1";
-		string queryStr = squery.str();
-
-		httplib::SSLClient loginReq(NT_REALTIME_HOST, HTTPS_PORT);
-		string path = NT_PRIMUS_ENDPOINT + queryStr;
-		loginCookie = "ntuserrem=" + token;
-		shared_ptr<httplib::Response> res = loginReq.get(path.c_str(), loginCookie);
-		if (res) {
-			json jres = json::parse(res->body.substr(4, res->body.length()));
-			primusSid = jres["sid"];
-			cout << "Resolved primus SID: " << primusSid << endl;
-		} else {
-			cout << "Error retrieving primus handshake data.\n";
-			return false;
-		}
-		return true;
-	}
-	void addListeners() {
-		assert(wsh != nullptr);
-		wsh->onError([this](void* udata) {
-			cout << "Failed to connect to WebSocket server." << endl;
-			hasError = true;
-		});
-		wsh->onConnection([this](WebSocket<CLIENT>* wsocket, HttpRequest req) {
-			cout << "Connected to the realtime server." << endl;
-		});
-		wsh->onDisconnection([this](WebSocket<CLIENT>* wsocket, int code, char* msg, size_t len) {
-			cout << "Disconnected from the realtime server." << endl;
-		});
-		wsh->onMessage([this](WebSocket<SERVER>* ws, char* msg, size_t len, OpCode opCode) {
-			cout << "ws message" << endl; // TODO: parse incoming messages
-		});
-	}
 	bool connect() {
 		wsh = new Hub();
 		time_t tnow = time(0);
@@ -130,4 +96,43 @@ protected:
 	string primusSid;
 	bool hasError;
 	bool firstConnect;
+	void addListeners() {
+		assert(wsh != nullptr);
+		wsh->onError([this](void* udata) {
+			cout << "Failed to connect to WebSocket server." << endl;
+			hasError = true;
+		});
+		wsh->onConnection([this](WebSocket<CLIENT>* wsocket, HttpRequest req) {
+			cout << "Connected to the realtime server." << endl;
+		});
+		wsh->onDisconnection([this](WebSocket<CLIENT>* wsocket, int code, char* msg, size_t len) {
+			cout << "Disconnected from the realtime server." << endl;
+		});
+		wsh->onMessage([this](WebSocket<SERVER>* ws, char* msg, size_t len, OpCode opCode) {
+			cout << "ws message" << endl; // TODO: parse incoming messages
+		});
+	}
+	bool getPrimusSID() {
+		time_t tnow = time(0);
+		stringstream squery;
+		squery << "?_primuscb=" << tnow << "-0&EIO=3&transport=polling&t=" << tnow << "-0&b64=1";
+		string queryStr = squery.str();
+
+		httplib::SSLClient loginReq(NT_REALTIME_HOST, HTTPS_PORT);
+		string path = NT_PRIMUS_ENDPOINT + queryStr;
+		loginCookie = "ntuserrem=" + token;
+		shared_ptr<httplib::Response> res = loginReq.get(path.c_str(), loginCookie);
+		if (res) {
+			json jres = json::parse(res->body.substr(4, res->body.length()));
+			primusSid = jres["sid"];
+			cout << "Resolved primus SID: " << primusSid << endl;
+		} else {
+			cout << "Error retrieving primus handshake data.\n";
+			return false;
+		}
+		return true;
+	}
+	void onConnection(WebSocket<CLIENT>* wsocket, HttpRequest req) {
+		//
+	}
 };
