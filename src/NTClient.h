@@ -21,8 +21,7 @@ using namespace uWS;
 #define NT_LOGIN_ENDPOINT "/api/login"
 #define HTTP_PORT 80
 #define HTTPS_PORT 443
-typedef std::multimap<std::string, std::string> SMap;
-typedef std::pair<std::string, std::string> SPair;
+typedef std::map<std::string, std::string> SMap;
 
 class NTClient {
 public:
@@ -111,12 +110,16 @@ public:
 		string wsURI = uristream.str();
 		cout << "Connecting to endpoint: " << wsURI << endl;
 		if (firstConnect) {
-			firstConnect = false;
 			addListeners();
 		}
 		// Create cookie header
 		SMap cookieHeader;
-		cookieHeader.insert(SPair("Cookie", loginCookie));
+		cookieHeader["Cookie"] = loginCookie;
+		wsh->connect(wsURI, (void*)this, cookieHeader, 7000);
+		if (firstConnect) {
+			wsh->run();
+			firstConnect = false;
+		}
 		return true;
 	}
 protected:
