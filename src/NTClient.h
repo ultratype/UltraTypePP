@@ -66,6 +66,7 @@ public:
 		stringstream squery;
 		squery << "?_primuscb=" << tnow << "-0&EIO=3&transport=polling&t=" << tnow << "-0&b64=1";
 		string queryStr = squery.str();
+		cout << queryStr << endl;
 		return false;
 	}
 protected:
