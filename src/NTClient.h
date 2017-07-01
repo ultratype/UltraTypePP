@@ -21,6 +21,7 @@ class NTClient {
 public:
 	string uname;
 	string pword;
+	string token; // Login token
 	NTClient(string username, string password) {
 		uname = username;
 		pword = password;
@@ -35,7 +36,21 @@ public:
 		httplib::SSLClient loginReq(NITROTYPE_HOSTNAME, HTTPS_PORT);
 		shared_ptr<httplib::Response> res = loginReq.post(NT_LOGIN_ENDPOINT, data, "application/x-www-form-urlencoded; charset=UTF-8");
 		if (res) {
-			cout << res->cookies.size() << endl;
+			bool foundLoginCookie = false;
+			for (int i = 0; i < res->cookies.size(); ++i) {
+				string cookie = res->cookies.at(i);
+				if (cookie.find("ntuserrem=") == 0) {
+					foundLoginCookie = true;
+					vector<string> parts = Utils::split(cookie, '=');
+					string part1 = parts.at(1);
+					vector<string> parts2 = Utils::split(part1, ';');
+					token = parts2.at(0);
+					cout << "Retrieved login token: " << token << endl;
+				}
+			}
+			if (!foundLoginCookie) {
+				cout << "Unable to locate the login cookie. Maybe try a different account?\n";
+			}
 		} else {
 			ret = false;
 			cout << "Login request failed. This might be a network issue. Maybe try resetting your internet connection?\n";
