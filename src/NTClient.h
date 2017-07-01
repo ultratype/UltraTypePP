@@ -57,6 +57,9 @@ public:
 		}
 		return ret;
 	}
+	bool primusRequest() {
+		return false;
+	}
 protected:
 	Hub* ws;
 };
