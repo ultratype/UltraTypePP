@@ -72,7 +72,9 @@ public:
 		loginCookie = "ntuserrem=" + token;
 		shared_ptr<httplib::Response> res = loginReq.get(path.c_str(), loginCookie);
 		if (res) {
-			cout << res->body << endl;
+			json jres = json::parse(res->body.substr(4, res->body.length()));
+			primusSid = jres["sid"];
+			cout << "Resolved primus SID: " << primusSid << endl;
 		} else {
 			cout << "Error retrieving primus handshake data.\n";
 		}
@@ -83,4 +85,5 @@ protected:
 	string token; // Login token
 	string loginCookie; // For outgoing requests that require authentication
 	string pword;
+	string primusSid;
 };
