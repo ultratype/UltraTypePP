@@ -73,17 +73,16 @@ public:
 		wsh = new Hub();
 		time_t tnow = time(0);
 		stringstream uristream;
-		uristream  << NT_REALTIME_WS_ENDPOINT << "?_primuscb=" << tnow << "-0&EIO=3&transport=websocket&sid=" << primusSid << "&t=" << tnow << "-0&b64=1";
+		uristream  << NT_REALTIME_WS_ENDPOINT << "?_primuscb=" << tnow << "-0&EIO=3&transport=websocket&sid=" << primusSid << "&t=" << tnow << "&b64=1";
 		string wsURI = uristream.str();
 		cout << "Connecting to endpoint: " << wsURI << endl;
 		if (firstConnect) {
 			addListeners();
 		}
-		string cookieHeader = Utils::stringifyCookies(&cookies);
-		cout << "Cookies: " << cookieHeader << endl << endl;
+		// cout << "Cookies: " << rawCookieStr << endl << endl;
 		// Create override headers
 		SMap customHeaders;
-		customHeaders["Cookie"] = cookieHeader;
+		customHeaders["Cookie"] = rawCookieStr;
 		customHeaders["Origin"] = "https://www.nitrotype.com";
 		customHeaders["Host"] = "realtime1.nitrotype.com";
 		wsh->connect(wsURI, (void*)this, customHeaders, 7000);
@@ -101,6 +100,7 @@ protected:
 	string pword;
 	string ioCookie;
 	string primusSid;
+	string rawCookieStr;
 	vector<SPair> cookies;
 	bool hasError;
 	bool firstConnect;
@@ -110,19 +110,20 @@ protected:
 	}
 	bool getPrimusSID() {
 		time_t tnow = time(0);
+		rawCookieStr = Utils::stringifyCookies(&cookies);
 		stringstream squery;
 		squery << "?_primuscb=" << tnow << "-0&EIO=3&transport=polling&t=" << tnow << "-0&b64=1";
 		string queryStr = squery.str();
 
 		httplib::SSLClient loginReq(NT_REALTIME_HOST, HTTPS_PORT);
 		string path = NT_PRIMUS_ENDPOINT + queryStr;
-		loginCookie = "ntuserrem=" + token;
-		shared_ptr<httplib::Response> res = loginReq.get(path.c_str(), loginCookie);
+		shared_ptr<httplib::Response> res = loginReq.get(path.c_str(), rawCookieStr.c_str());
 		if (res) {
 			json jres = json::parse(res->body.substr(4, res->body.length()));
 			primusSid = jres["sid"];
 			cout << "Resolved primus SID: " << primusSid << endl;
 			addCookie("io", primusSid);
+			rawCookieStr = Utils::stringifyCookies(&cookies);
 		} else {
 			cout << "Error retrieving primus handshake data.\n";
 			return false;
@@ -165,10 +166,12 @@ protected:
 	}
 	void onConnection(WebSocket<CLIENT>* wsocket, HttpRequest req) {
 		// Send a probe, which is required for connection
-		wsocket->send("2probe");
+		wsocket->send("2probe", OpCode::TEXT);
+		/*
 		string joinTo = getJoinPacket(100); // 100 WPM just to test
 		cout << joinTo << endl;
 		wsocket->send(joinTo.c_str());
+		*/
 	}
 	void onDisconnection(WebSocket<CLIENT>* wsocket, int code, char* msg, size_t len) {
 		cout << "Disconn message: " << string(msg, len) << endl;

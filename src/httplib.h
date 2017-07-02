@@ -167,7 +167,7 @@ public:
     virtual ~Client();
 
     std::shared_ptr<Response> get(const char* path);
-    std::shared_ptr<Response> get(const char* path, std::string cookie);
+    std::shared_ptr<Response> get(const char* path, const char* cookie);
     std::shared_ptr<Response> head(const char* path);
     std::shared_ptr<Response> post(const char* path, const std::string& body, const char* content_type);
     std::shared_ptr<Response> post(const char* path, const Map& params);
@@ -771,6 +771,7 @@ inline std::string Response::get_header_value(const char* key) const
 
 inline void Response::set_header(const char* key, const char* val)
 {
+    std::cout << key << ": " << val << std::endl;
     headers.insert(std::make_pair(key, val));
 }
 
@@ -1103,13 +1104,13 @@ inline std::shared_ptr<Response> Client::get(const char* path)
 
     return send(req, *res) ? res : nullptr;
 }
-inline std::shared_ptr<Response> Client::get(const char* path, std::string cookie)
+inline std::shared_ptr<Response> Client::get(const char* path, const char* cookie)
 {
     Request req;
     req.method = "GET";
     req.path = path;
     add_default_headers(req);
-    req.set_header("Cookie", cookie.c_str());
+    req.set_header("Cookie", cookie);
 
     auto res = std::make_shared<Response>();
 
