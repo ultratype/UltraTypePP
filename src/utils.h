@@ -25,7 +25,7 @@ public:
 	    return elems;
 	}
 	template <class F, class... Args>
-	void setInterval(std::atomic_bool& cancelToken,size_t interval,F&& f, Args&&... args){
+	static void setInterval(std::atomic_bool& cancelToken,size_t interval,F&& f, Args&&... args){
 	  cancelToken.store(true);
 	  auto cb = std::bind(std::forward<F>(f),std::forward<Args>(args)...);
 	  std::async(std::launch::async,[=,&cancelToken]()mutable{
@@ -34,5 +34,28 @@ public:
 	        std::this_thread::sleep_for(std::chrono::milliseconds(interval));
 	     }
 	  });
+	}
+	static std::string extractCValue(std::string cookie) {
+		std::vector<std::string> parts = Utils::split(cookie, '=');
+		std::string part1 = parts.at(1);
+		std::vector<std::string> parts2 = Utils::split(part1, ';');
+		return std::string(parts2.at(0));
+	}
+	static std::string extractCKey(std::string cookie) {
+		std::vector<std::string> parts = Utils::split(cookie, '=');
+		return std::string(parts.at(0));
+	}
+	static std::string stringifyCookies(std::vector<std::pair<std::string, std::string>>* cookies) {
+		std::string ret("");
+		for (int i = 0; i < cookies->size(); ++i) {
+			std::pair<std::string, std::string> c = cookies->at(i);
+			ret += c.first;
+			ret += "=";
+			ret += c.second;
+			if (i != cookies->size() - 1) {
+				ret += "; ";
+			}
+		}
+		return ret;
 	}
 };

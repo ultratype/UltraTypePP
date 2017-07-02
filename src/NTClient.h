@@ -13,6 +13,7 @@ using namespace std;
 using namespace nlohmann;
 using namespace uWS;
 
+#define NTDEVV "13377898"
 #define NITROTYPE_HOSTNAME "www.nitrotype.com"
 #define NT_REALTIME_HOST "realtime1.nitrotype.com"
 // wss://realtime1.nitrotype.com/realtime/?_primuscb=1498950532425-0&EIO=3&transport=websocket&sid=FGGxSq9DqbZyy7Z_AwlQ&t=1498950532723&b64=1
@@ -22,6 +23,7 @@ using namespace uWS;
 #define HTTP_PORT 80
 #define HTTPS_PORT 443
 typedef std::map<std::string, std::string> SMap;
+typedef std::pair<std::string, std::string> SPair;
 
 class NTClient {
 public:
@@ -47,13 +49,12 @@ public:
 			bool foundLoginCookie = false;
 			for (int i = 0; i < res->cookies.size(); ++i) {
 				string cookie = res->cookies.at(i);
+				addCookie(Utils::extractCKey(cookie), Utils::extractCValue(cookie));
 				if (cookie.find("ntuserrem=") == 0) {
 					foundLoginCookie = true;
-					vector<string> parts = Utils::split(cookie, '=');
-					string part1 = parts.at(1);
-					vector<string> parts2 = Utils::split(part1, ';');
-					token = parts2.at(0);
+					token = Utils::extractCValue(cookie);
 					cout << "Retrieved login token: " << token << endl;
+					addCookie("ntuserrem", token);
 				}
 			}
 			if (!foundLoginCookie) {
@@ -78,12 +79,14 @@ public:
 		if (firstConnect) {
 			addListeners();
 		}
-		// Create cookie header
-		SMap cookieHeader;
-		cookieHeader["Cookie"] = loginCookie;
-		cookieHeader["Origin"] = "https://www.nitrotype.com";
-		cookieHeader["Host"] = "realtime1.nitrotype.com";
-		wsh->connect(wsURI, (void*)this, cookieHeader, 7000);
+		string cookieHeader = Utils::stringifyCookies(&cookies);
+		// Create override headers
+		SMap customHeaders;
+		customHeaders["Cookie"] = cookieHeader;
+		customHeaders["Origin"] = "https://www.nitrotype.com";
+		customHeaders["Host"] = "realtime1.nitrotype.com";
+		wsh->connect(wsURI, (void*)this, customHeaders, 7000);
+		// wsh->connect(wsURI);
 		if (firstConnect) {
 			wsh->run();
 			firstConnect = false;
@@ -95,9 +98,15 @@ protected:
 	string token; // Login token
 	string loginCookie; // For outgoing requests that require authentication
 	string pword;
+	string ioCookie;
 	string primusSid;
+	vector<SPair> cookies;
 	bool hasError;
 	bool firstConnect;
+	void addCookie(string key, string val) {
+		SPair sp = SPair(key, val);
+		cookies.push_back(sp);
+	}
 	bool getPrimusSID() {
 		time_t tnow = time(0);
 		stringstream squery;
@@ -112,6 +121,7 @@ protected:
 			json jres = json::parse(res->body.substr(4, res->body.length()));
 			primusSid = jres["sid"];
 			cout << "Resolved primus SID: " << primusSid << endl;
+			addCookie("io", primusSid);
 		} else {
 			cout << "Error retrieving primus handshake data.\n";
 			return false;
@@ -125,9 +135,9 @@ protected:
 			{"payload", {
 				{"debugging", false},
 				{"avgSpeed", avgSpeed},
-				{"forceEarlyPlace", true},
 				{"track", "desert"},
-				{"music", "city_nights"}
+				{"music", "dirty_bit"},
+				{"update", 3417}
 			}}
 		};
 		string ret = "4";
@@ -155,9 +165,13 @@ protected:
 	void onConnection(WebSocket<CLIENT>* wsocket, HttpRequest req) {
 		// Send a probe, which is required for connection
 		wsocket->send("2probe");
+		string joinTo = getJoinPacket(100); // 100 WPM just to test
+		cout << joinTo << endl;
+		wsocket->send(joinTo.c_str());
 	}
 	void onDisconnection(WebSocket<CLIENT>* wsocket, int code, char* msg, size_t len) {
-		//
+		cout << "Disconn message: " << string(msg, len) << endl;
+		cout << "Disconn code: " << code << endl;
 	}
 	void onMessage(WebSocket<SERVER>* ws, char* msg, size_t len, OpCode opCode) {
 		cout << "ws message" << endl; // TODO: parse incoming messages
