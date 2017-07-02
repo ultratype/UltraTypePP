@@ -80,6 +80,7 @@ public:
 			addListeners();
 		}
 		string cookieHeader = Utils::stringifyCookies(&cookies);
+		cout << "Cookies: " << cookieHeader << endl << endl;
 		// Create override headers
 		SMap customHeaders;
 		customHeaders["Cookie"] = cookieHeader;
