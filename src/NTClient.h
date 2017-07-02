@@ -27,14 +27,14 @@ class NTClient {
 public:
 	string uname;
 	bool connected;
-	NTClient(string username, string password) {
-		uname = username;
-		pword = password;
+	NTClient() {
 		hasError = false;
 		firstConnect = true;
 		connected = false;
 	}
-	bool login() {
+	bool login(string username, string password) {
+		uname = username;
+		pword = password;
 		bool ret = true;
 		string data = string("username=");
 		data += uname;
@@ -117,6 +117,22 @@ protected:
 			return false;
 		}
 		return true;
+	}
+	std::string getJoinPacket(int avgSpeed) {
+		json p = {
+			{"stream", "race"},
+			{"msg", "join"},
+			{"payload", {
+				{"debugging", false},
+				{"avgSpeed", avgSpeed},
+				{"forceEarlyPlace", true},
+				{"track", "desert"},
+				{"music", "city_nights"}
+			}}
+		};
+		string ret = "4";
+		ret += p.dump();
+		return ret;
 	}
 	void addListeners() {
 		assert(wsh != nullptr);
