@@ -29,11 +29,7 @@ class NTClient {
 public:
 	string uname;
 	bool connected;
-	NTClient() {
-		hasError = false;
-		firstConnect = true;
-		connected = false;
-	}
+	NTClient();
 	bool login(string username, string password) {
 		uname = username;
 		pword = password;

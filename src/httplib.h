@@ -771,7 +771,7 @@ inline std::string Response::get_header_value(const char* key) const
 
 inline void Response::set_header(const char* key, const char* val)
 {
-    std::cout << key << ": " << val << std::endl;
+    // std::cout << key << ": " << val << std::endl;
     headers.insert(std::make_pair(key, val));
 }
 
@@ -1053,7 +1053,7 @@ inline bool Client::send(const Request& req, Response& res)
 {
     auto sock = detail::create_client_socket(host_.c_str(), port_);
     if (sock == -1) {
-        std::cout << "httplib: socket creation error\n";
+        // std::cout << "httplib: socket creation error\n";
         return false;
     }
 
