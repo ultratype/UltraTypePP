@@ -56,7 +56,7 @@ bool NTClient::connect() {
 	SMap customHeaders;
 	customHeaders["Cookie"] = rawCookieStr;
 	customHeaders["Origin"] = "https://www.nitrotype.com";
-	customHeaders["Host"] = "realtime1.nitrotype.com";
+	// customHeaders["Host"] = "realtime1.nitrotype.com";
 	wsh->connect(wsURI, (void*)this, customHeaders, 7000);
 	// wsh->connect(wsURI);
 	if (firstConnect) {
