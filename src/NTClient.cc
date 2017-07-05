@@ -132,6 +132,10 @@ void NTClient::onDisconnection(WebSocket<CLIENT>* wsocket, int code, char* msg, 
 	cout << "Disconn code: " << code << endl;
 }
 void NTClient::onMessage(WebSocket<CLIENT>* ws, char* msg, size_t len, OpCode opCode) {
+	if (OpCode != OpCode::TEXT) {
+		cout << "The server did not send a text packet, ignoring.\n";
+		return;
+	}
 	cout << "ws message" << endl; // TODO: parse incoming messages
 }
 void NTClient::onConnection(WebSocket<CLIENT>* wsocket, HttpRequest req) {
