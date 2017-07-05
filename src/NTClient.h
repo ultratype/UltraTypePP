@@ -19,7 +19,6 @@ using namespace uWS;
 #define NTDEVV "13377898"
 #define NITROTYPE_HOSTNAME "www.nitrotype.com"
 #define NT_REALTIME_HOST "realtime1.nitrotype.com"
-// wss://realtime1.nitrotype.com/realtime/?_primuscb=1498950532425-0&EIO=3&transport=websocket&sid=FGGxSq9DqbZyy7Z_AwlQ&t=1498950532723&b64=1
 #define NT_REALTIME_WS_ENDPOINT "wss://realtime1.nitrotype.com/realtime/"
 #define NT_PRIMUS_ENDPOINT "/realtime/"
 #define NT_LOGIN_ENDPOINT "/api/login"
