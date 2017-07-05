@@ -12,6 +12,10 @@ void initBot() {
 }
 
 int main(int argc, char** argv) {
-	initBot();
+	// For testing
+	NTLogger lg = NTLogger();
+	lg << LOG_HTTP;
+	lg << "Test";
+	// initBot();
 	return 0;
 }
