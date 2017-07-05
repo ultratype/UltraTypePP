@@ -20,7 +20,7 @@ void initBot() {
 	nclient.connect();
 }
 int main(int argc, char** argv) {
-	testLogger();
-	//initBot();
+	// testLogger();
+	initBot();
 	return 0;
 }
