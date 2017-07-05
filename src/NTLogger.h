@@ -1,4 +1,4 @@
-#ifdef NTLOGGER_H
+#ifndef NTLOGGER_H
 #define NTLOGGER_H
 
 #include "colors.h"

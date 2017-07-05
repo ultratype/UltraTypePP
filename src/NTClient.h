@@ -1,4 +1,4 @@
-#ifdef NTCLIENT_H
+#ifndef NTCLIENT_H
 #define NTCLIENT_H
 
 #include "httplib.h"

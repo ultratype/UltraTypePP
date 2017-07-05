@@ -1,5 +1,5 @@
 // Macros that describe ASCII color output for most major console applications
-#ifdef _COLORS_H
+#ifndef _COLORS_H
 #define _COLORS_H
 
 #define CLR_RED   "\x1B[31m"
