@@ -93,20 +93,11 @@ bool NTClient::getPrimusSID() {
 	return true;
 }
 string NTClient::getJoinPacket(int avgSpeed) {
-	json p = {
-		{"stream", "race"},
-		{"msg", "join"},
-		{"payload", {
-			{"debugging", false},
-			{"avgSpeed", avgSpeed},
-			{"track", "desert"},
-			{"music", "dirty_bit"},
-			{"update", 3417}
-		}}
-	};
-	string ret = "4";
-	ret += p.dump();
-	return ret;
+	stringstream ss;
+	ss << "4{\"stream\":\"race\",\"msg\":\"join\",\"payload\":{\"debugging\":false,\"avgSpeed\":"
+	<< avgSpeed
+	<< ",\"forceEarlyPlace\":true,\"track\":\"desert\",\"music\":\"city_nights\"}}"
+	return ss.str();
 }
 void NTClient::addListeners() {
 	assert(wsh != nullptr);
@@ -143,7 +134,7 @@ void NTClient::onConnection(WebSocket<CLIENT>* wsocket, HttpRequest req) {
 	wsocket->send("2probe", OpCode::TEXT);
 	cout << "Requesting for a race in 1 second." << endl;
 	this_thread::sleep_for(chrono::seconds(1));
-	string joinTo = getJoinPacket(100); // 100 WPM just to test
+	string joinTo = getJoinPacket(20); // 100 WPM just to test
 	cout << joinTo << endl;
 	wsocket->send(joinTo.c_str());
 }
