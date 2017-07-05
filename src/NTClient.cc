@@ -26,7 +26,7 @@ bool NTClient::login(string username, string password) {
 				foundLoginCookie = true;
 				token = Utils::extractCValue(cookie);
 				cout << "Retrieved login token: " << token << endl;
-				addCookie("ntuserrem", token);
+				// addCookie("ntuserrem", token);
 			}
 		}
 		if (!foundLoginCookie) {
@@ -45,7 +45,7 @@ bool NTClient::connect() {
 	wsh = new Hub();
 	time_t tnow = time(0);
 	stringstream uristream;
-	uristream  << NT_REALTIME_WS_ENDPOINT << "?_primuscb=" << tnow << "-0&EIO=3&transport=websocket&sid=" << primusSid << "&t=" << tnow << "&b64=1";
+	uristream  << NT_REALTIME_WS_ENDPOINT << "?_primuscb=" << tnow << "-1&EIO=3&transport=websocket&sid=" << primusSid << "&t=" << tnow << "-2&b64=1";
 	string wsURI = uristream.str();
 	cout << "Connecting to endpoint: " << wsURI << endl;
 	if (firstConnect) {
@@ -54,7 +54,7 @@ bool NTClient::connect() {
 	// cout << "Cookies: " << rawCookieStr << endl << endl;
 	// Create override headers
 	SMap customHeaders;
-	customHeaders["Cookie"] = rawCookieStr;
+	customHeaders["cookie"] = rawCookieStr;
 	customHeaders["Origin"] = "https://www.nitrotype.com";
 	customHeaders["User-Agent"] = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/55.0.2883.87 Chrome/55.0.2883.87 Safari/537.36";
 	// customHeaders["Host"] = "realtime1.nitrotype.com";
@@ -81,6 +81,7 @@ bool NTClient::getPrimusSID() {
 	string path = NT_PRIMUS_ENDPOINT + queryStr;
 	shared_ptr<httplib::Response> res = loginReq.get(path.c_str(), rawCookieStr.c_str());
 	if (res) {
+		cout << res->body << endl;
 		json jres = json::parse(res->body.substr(4, res->body.length()));
 		primusSid = jres["sid"];
 		cout << "Resolved primus SID: " << primusSid << endl;
@@ -116,6 +117,7 @@ void NTClient::addListeners() {
 	});
 	wsh->onConnection([this](WebSocket<CLIENT>* wsocket, HttpRequest req) {
 		cout << "Connected to the realtime server." << endl;
+		cout << req.getUrl().key << endl;
 		onConnection(wsocket, req);
 	});
 	wsh->onDisconnection([this](WebSocket<CLIENT>* wsocket, int code, char* msg, size_t len) {
@@ -137,8 +139,8 @@ void NTClient::onConnection(WebSocket<CLIENT>* wsocket, HttpRequest req) {
 	// Send a probe, which is required for connection
 	wsocket->send("2probe", OpCode::TEXT);
 	/*
-		string joinTo = getJoinPacket(100); // 100 WPM just to test
-		cout << joinTo << endl;
-		wsocket->send(joinTo.c_str());
+	string joinTo = getJoinPacket(100); // 100 WPM just to test
+	cout << joinTo << endl;
+	wsocket->send(joinTo.c_str());
 	*/
 }
