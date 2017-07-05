@@ -43,6 +43,17 @@ public:
 		}
 	}
 	void operator<<(unsigned char type) { // Unsigned char type to allow integers to be written to the stream
+		writeType(type);
+	}
+	void type(unsigned char type) {
+		writeType(type);
+	}
+protected:
+	string fname;
+	ofstream stream;
+	bool closed;
+	bool hasFile;
+	void writeType(unsigned char type) { // Unsigned char type to allow integers to be written to the stream
 		string out;
 		string color;
 		switch (type) {
@@ -71,11 +82,6 @@ public:
 			stream << out;
 		}
 	}
-protected:
-	string fname;
-	ofstream stream;
-	bool closed;
-	bool hasFile;
 };
 
 #endif
