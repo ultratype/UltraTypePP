@@ -33,9 +33,10 @@ public:
 		}
 	}
 	void operator<<(string msg) {
-		cout << msg << endl;
+		cout << CLR_YEL << username << ": " << CLR_RESET;
+		cout << msg;
 		if (hasFile) {
-			stream << msg << endl;
+			stream << username << ": " << msg;
 		}
 	}
 	void operator<<(int msgi) {
