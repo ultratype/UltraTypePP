@@ -12,6 +12,8 @@
 #include <map>
 #include <algorithm>
 #include <ctime>
+#include <chrono>
+#include <thread>
 using namespace std;
 using namespace nlohmann;
 using namespace uWS;

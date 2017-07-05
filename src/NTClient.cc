@@ -141,9 +141,9 @@ void NTClient::onMessage(WebSocket<CLIENT>* ws, char* msg, size_t len, OpCode op
 void NTClient::onConnection(WebSocket<CLIENT>* wsocket, HttpRequest req) {
 	// Send a probe, which is required for connection
 	wsocket->send("2probe", OpCode::TEXT);
-	/*
+	cout << "Requesting for a race in 1 second." << endl;
+	this_thread::sleep_for(chrono::seconds(1));
 	string joinTo = getJoinPacket(100); // 100 WPM just to test
 	cout << joinTo << endl;
 	wsocket->send(joinTo.c_str());
-	*/
 }
