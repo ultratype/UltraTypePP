@@ -14,12 +14,14 @@ using namespace std;
 
 class NTLogger {
 public:
-	NTLogger() {
+	NTLogger(string uname) {
 		closed = false;
 		hasFile = false;
+		username = uname;
 	}
-	NTLogger(string _fname) {
+	NTLogger(string uname, string _fname) {
 		fname = _fname;
+		username = uname;
 		stream = ofstream();
 		hasFile = true;
 		stream.open(_fname);
@@ -53,6 +55,7 @@ protected:
 	ofstream stream;
 	bool closed;
 	bool hasFile;
+	string username;
 	void writeType(unsigned char type) { // Unsigned char type to allow integers to be written to the stream
 		string out;
 		string color;
