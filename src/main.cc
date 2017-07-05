@@ -1,5 +1,6 @@
 #include <iostream>
 #include "NTClient.h"
+using namespace std;
 
 NTClient cli;
 void initBot() {
