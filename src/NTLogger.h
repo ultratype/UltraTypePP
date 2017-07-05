@@ -37,7 +37,7 @@ public:
 		writeTxt(msg);
 	}
 	void operator<<(int msgi) {
-		cout << msgi;
+		cout << STYLE_BOLD << CLR_RED << msgi << CLR_RESET;
 		if (hasFile) {
 			stream << msgi;
 		}
