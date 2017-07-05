@@ -1,3 +1,6 @@
+#ifdef NTCLIENT_H
+#define NTCLIENT_H
+
 #include "httplib.h"
 #include "json.hpp"
 #include "utils.h"
@@ -51,3 +54,5 @@ protected:
 	void onDisconnection(WebSocket<CLIENT>*, int, char*, size_t);
 	void onMessage(WebSocket<SERVER>*, char*, size_t, OpCode);
 };
+
+#endif
