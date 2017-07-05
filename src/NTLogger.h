@@ -4,6 +4,7 @@
 #define LOG_RACE (unsigned char)2
 #define LOG_INFO (unsigned char)3
 #define LOG_CONN (unsigned char)4
+#define lln 	 (unsigned char)5
 
 #include <string>
 #include <iostream>
@@ -33,11 +34,7 @@ public:
 		}
 	}
 	void operator<<(string msg) {
-		cout << CLR_YEL << username << ": " << CLR_RESET;
-		cout << msg;
-		if (hasFile) {
-			stream << username << ": " << msg;
-		}
+		writeTxt(msg);
 	}
 	void operator<<(int msgi) {
 		cout << msgi;
@@ -51,13 +48,37 @@ public:
 	void type(unsigned char type) {
 		writeType(type);
 	}
+	void ln() {
+		writeLine();
+	}
+	void wr(string msg) {
+		writeTxt(msg);
+		writeLine();
+	}
 protected:
 	string fname;
 	ofstream stream;
 	bool closed;
 	bool hasFile;
 	string username;
+	void writeTxt(string msg) {
+		cout << CLR_YEL << username << ": " << CLR_RESET;
+		cout << msg;
+		if (hasFile) {
+			stream << username << ": " << msg;
+		}
+	}
+	void writeLine() {
+		cout << '\n';
+		if (hasFile) {
+			stream << '\n';
+		}
+	}
 	void writeType(unsigned char type) { // Unsigned char type to allow integers to be written to the stream
+		if (type == lln) {
+			writeLine();
+			return;
+		}
 		string out;
 		string color;
 		switch (type) {
