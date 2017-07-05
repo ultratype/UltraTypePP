@@ -1,5 +1,6 @@
 #include <iostream>
 #include "NTClient.h"
+#include "NTLogger.h"
 using namespace std;
 
 NTClient cli;
