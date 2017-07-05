@@ -30,6 +30,12 @@ public:
 			stream << msg << endl;
 		}
 	}
+	void close() {
+		if (closed == false && hasFile == true) {
+			closed = true;
+			stream.close();
+		}
+	}
 	void operator<<(int type) {
 		string out;
 		string color;
