@@ -51,7 +51,7 @@ protected:
 	void addListeners();
 	void onConnection(WebSocket<CLIENT>*, HttpRequest);
 	void onDisconnection(WebSocket<CLIENT>*, int, char*, size_t);
-	void onMessage(WebSocket<SERVER>*, char*, size_t, OpCode);
+	void onMessage(WebSocket<CLIENT>*, char*, size_t, OpCode);
 };
 
 #endif

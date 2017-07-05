@@ -46,7 +46,7 @@ bool NTClient::connect() {
 	time_t tnow = time(0);
 	rawCookieStr = Utils::stringifyCookies(&cookies);
 	stringstream uristream;
-	uristream  << NT_REALTIME_WS_ENDPOINT << "?_primuscb=" << tnow << "-1&EIO=3&transport=websocket&sid=" << primusSid << "&t=" << tnow << "-2&b64=1";
+	uristream  << "wss://realtime1.nitrotype.com:443/realtime/?_primuscb=" << tnow << "-0&EIO=3&transport=websocket&sid=" << primusSid << "&t=" << tnow << "&b64=1";
 	string wsURI = uristream.str();
 	cout << "Connecting to endpoint: " << wsURI << endl;
 	if (firstConnect) {
@@ -83,11 +83,10 @@ bool NTClient::getPrimusSID() {
 	string path = NT_PRIMUS_ENDPOINT + queryStr;
 	shared_ptr<httplib::Response> res = loginReq.get(path.c_str(), rawCookieStr.c_str());
 	if (res) {
-		cout << res->body << endl;
 		json jres = json::parse(res->body.substr(4, res->body.length()));
 		primusSid = jres["sid"];
 		cout << "Resolved primus SID: " << primusSid << endl;
-		addCookie("io", primusSid);
+		// addCookie("io", primusSid);
 	} else {
 		cout << "Error retrieving primus handshake data.\n";
 		return false;
@@ -118,14 +117,13 @@ void NTClient::addListeners() {
 	});
 	wsh->onConnection([this](WebSocket<CLIENT>* wsocket, HttpRequest req) {
 		cout << "Connected to the realtime server." << endl;
-		cout << req.getUrl().key << endl;
 		onConnection(wsocket, req);
 	});
 	wsh->onDisconnection([this](WebSocket<CLIENT>* wsocket, int code, char* msg, size_t len) {
 		cout << "Disconnected from the realtime server." << endl;
 		onDisconnection(wsocket, code, msg, len);
 	});
-	wsh->onMessage([this](WebSocket<SERVER>* ws, char* msg, size_t len, OpCode opCode) {
+	wsh->onMessage([this](WebSocket<CLIENT>* ws, char* msg, size_t len, OpCode opCode) {
 		onMessage(ws, msg, len, opCode);
 	});
 }
@@ -133,7 +131,7 @@ void NTClient::onDisconnection(WebSocket<CLIENT>* wsocket, int code, char* msg, 
 	cout << "Disconn message: " << string(msg, len) << endl;
 	cout << "Disconn code: " << code << endl;
 }
-void NTClient::onMessage(WebSocket<SERVER>* ws, char* msg, size_t len, OpCode opCode) {
+void NTClient::onMessage(WebSocket<CLIENT>* ws, char* msg, size_t len, OpCode opCode) {
 	cout << "ws message" << endl; // TODO: parse incoming messages
 }
 void NTClient::onConnection(WebSocket<CLIENT>* wsocket, HttpRequest req) {
