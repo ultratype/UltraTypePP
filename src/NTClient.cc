@@ -44,6 +44,7 @@ bool NTClient::login(string username, string password) {
 bool NTClient::connect() {
 	wsh = new Hub();
 	time_t tnow = time(0);
+	rawCookieStr = Utils::stringifyCookies(&cookies);
 	stringstream uristream;
 	uristream  << NT_REALTIME_WS_ENDPOINT << "?_primuscb=" << tnow << "-1&EIO=3&transport=websocket&sid=" << primusSid << "&t=" << tnow << "-2&b64=1";
 	string wsURI = uristream.str();
@@ -87,7 +88,6 @@ bool NTClient::getPrimusSID() {
 		primusSid = jres["sid"];
 		cout << "Resolved primus SID: " << primusSid << endl;
 		addCookie("io", primusSid);
-		rawCookieStr = Utils::stringifyCookies(&cookies);
 	} else {
 		cout << "Error retrieving primus handshake data.\n";
 		return false;
