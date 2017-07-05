@@ -1,9 +1,9 @@
 #ifndef NTLOGGER_H
 #define NTLOGGER_H
-#define LOG_HTTP 1
-#define LOG_RACE 2
-#define LOG_INFO 3
-#define LOG_CONN 4
+#define LOG_HTTP (unsigned char)1
+#define LOG_RACE (unsigned char)2
+#define LOG_INFO (unsigned char)3
+#define LOG_CONN (unsigned char)4
 
 #include <string>
 #include <iostream>
@@ -24,19 +24,19 @@ public:
 		hasFile = true;
 		stream.open(_fname);
 	}
-	void operator<<(string msg) {
-		cout << msg << endl;
-		if (hasFile) {
-			stream << msg << endl;
-		}
-	}
 	void close() {
 		if (closed == false && hasFile == true) {
 			closed = true;
 			stream.close();
 		}
 	}
-	void operator<<(int type) {
+	void operator<<(string msg) {
+		cout << msg << endl;
+		if (hasFile) {
+			stream << msg << endl;
+		}
+	}
+	void operator<<(unsigned char type) { // Unsigned char type to allow integers to be written to the stream
 		string out;
 		string color;
 		switch (type) {
