@@ -36,6 +36,12 @@ public:
 			stream << msg << endl;
 		}
 	}
+	void operator<<(int msgi) {
+		cout << msgi;
+		if (hasFile) {
+			stream << msgi;
+		}
+	}
 	void operator<<(unsigned char type) { // Unsigned char type to allow integers to be written to the stream
 		string out;
 		string color;
