@@ -102,7 +102,7 @@ protected:
 				cout << "Ignoring invalid log type!\n";
 				break;
 		}
-		cout << color << out << CLR_RESET;
+		cout << STYLE_ITALIC << color << out << CLR_RESET;
 		if (hasFile) {
 			stream << out;
 		}

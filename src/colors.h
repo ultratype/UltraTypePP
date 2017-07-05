@@ -11,4 +11,6 @@
 #define CLR_WHT   "\x1B[37m"
 #define CLR_RESET "\x1B[0m"
 
+#define STYLE_ITALIC "\x1B[3m"
+
 #endif
