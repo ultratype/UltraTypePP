@@ -96,7 +96,7 @@ string NTClient::getJoinPacket(int avgSpeed) {
 	stringstream ss;
 	ss << "4{\"stream\":\"race\",\"msg\":\"join\",\"payload\":{\"debugging\":false,\"avgSpeed\":"
 	<< avgSpeed
-	<< ",\"forceEarlyPlace\":true,\"track\":\"desert\",\"music\":\"city_nights\"}}"
+	<< ",\"forceEarlyPlace\":true,\"track\":\"desert\",\"music\":\"city_nights\"}}";
 	return ss.str();
 }
 void NTClient::addListeners() {
