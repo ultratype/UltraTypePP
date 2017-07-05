@@ -62,7 +62,7 @@ protected:
 	bool hasFile;
 	string username;
 	void writeTxt(string msg) {
-		cout << CLR_YEL << username << ": " << CLR_RESET;
+		cout << STYLE_BOLD << CLR_YEL << username << ": " << CLR_RESET;
 		cout << msg;
 		if (hasFile) {
 			stream << username << ": " << msg;

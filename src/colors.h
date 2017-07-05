@@ -12,5 +12,6 @@
 #define CLR_RESET "\x1B[0m"
 
 #define STYLE_ITALIC "\x1B[3m"
+#define STYLE_BOLD "\x1B[1m"
 
 #endif
