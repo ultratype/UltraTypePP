@@ -230,13 +230,14 @@ void NTClient::type(WebSocket<CLIENT>* ws) {
 	}
 	int low = typeIntervalMS - 10;
 	int high = typeIntervalMS + 10;
-	bool isRight = Utils::randBool(accuracy);	
+	bool isRight = Utils::randBool(accuracy);
+	int sleepFor = Utils::randInt(low, high);
 	if (low < 10) {
 		low = 10;
 	}
+	cout << "Typing with index: " << lidx << ", isRight: " << isRight << ", sleepFor: " << sleepFor << endl;
 	sendTypePacket(ws, lidx, isRight);
 	lidx++;
-	int sleepFor = Utils::randInt(low, high);
 	this_thread::sleep_for(chrono::milliseconds(sleepFor));
 	type(ws); // Call the function until the lesson has been "typed"
 }
