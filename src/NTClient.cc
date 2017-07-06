@@ -121,6 +121,9 @@ void NTClient::onDisconnection(WebSocket<CLIENT>* wsocket, int code, char* msg, 
 	cout << "Disconn message: " << string(msg, len) << endl;
 	cout << "Disconn code: " << code << endl;
 }
+void NTClient::handleData(WebSocket<CLIENT>* ws, json* j) {
+	cout << "Recieved json data:" << endl << j->dump(4) << endl;
+}
 void NTClient::onMessage(WebSocket<CLIENT>* ws, char* msg, size_t len, OpCode opCode) {
 	if (opCode != OpCode::TEXT) {
 		cout << "The realtime server did not send a text packet for some reason, ignoring.\n";
@@ -129,13 +132,22 @@ void NTClient::onMessage(WebSocket<CLIENT>* ws, char* msg, size_t len, OpCode op
 	string smsg = string(msg, len);
 	if (smsg == "3probe") {
 		// Response to initial connection probe
-		cout << "Recieved response handshake\n";
 		ws->send("5", OpCode::TEXT);
 		// Join packet
 		this_thread::sleep_for(chrono::seconds(1));
 		string joinTo = getJoinPacket(20); // 20 WPM just to test
-		cout << joinTo << endl;
 		ws->send(joinTo.c_str(), OpCode::TEXT);
+	} else if (smsg.length() > 2 && smsg[0] == '4' && smsg[1] == '{') {
+		string rawJData = smsg.substr(1, smsg.length());
+		json jdata;
+		try {
+			jdata = json::parse(rawJData);
+		} catch (const exception& e) {
+			// Some error parsing real race data, something must be wrong
+			cout << "There was an issue parsing server data: " << e.what() << endl;
+			return;
+		}
+		handleData(ws, &jdata);
 	} else {
 		cout << "Recieved unknown WebSocket message: '" << smsg << "'\n";
 	}
