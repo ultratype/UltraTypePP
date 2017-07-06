@@ -57,6 +57,9 @@ public:
 	void wr(string msg) {
 		writeTxt(msg);
 	}
+	void wrs(string msg) {
+		cout << CLR_WHT << msg << CLR_RESET;
+	}
 protected:
 	string fname;
 	ofstream stream;

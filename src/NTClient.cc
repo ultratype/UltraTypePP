@@ -145,6 +145,24 @@ void NTClient::handleData(WebSocket<CLIENT>* ws, json* j) {
 	if (j->operator[]("msg") == "setup") {
 		log->type(LOG_RACE);
 		log->wr("I joined a new race.\n");
+	} else if (j->operator[]("msg") == "joined") {
+		string joinedName = j->operator[]("payload")["profile"]["username"];
+		string dispName;
+		try {
+			dispName = j->operator[]("payload")["profile"]["displayName"];
+		} catch (const exception& e) {
+			dispName = "[None]";
+		}
+		log->type(LOG_RACE);
+		if (joinedName == "bot") {
+			log->wr("Bot user '");
+			log->wrs(dispName);
+			log->wrs("' joined the race.\n");
+		} else {
+			log->wr("Human user '");
+			log->wrs(joinedName);
+			log->wrs("' joined the race.\n");
+		}
 	}
 }
 void NTClient::onMessage(WebSocket<CLIENT>* ws, char* msg, size_t len, OpCode opCode) {
