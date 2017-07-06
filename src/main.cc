@@ -2,10 +2,8 @@
 #include "NTClient.h"
 using namespace std;
 
-NTClient cli;
 void initBot() {
-	NTClient nclient = NTClient();
-	cout << "Logging account in...\n";
+	NTClient nclient = NTClient(120, 0.98);
 	nclient.login("gfsiosd", "123asd123"); // Throw-away account
 	nclient.connect();
 }

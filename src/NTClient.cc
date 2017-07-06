@@ -1,7 +1,9 @@
 #include "NTClient.h"
 using namespace std;
 
-NTClient::NTClient() {
+NTClient::NTClient(int interval, double _accuracy) {
+	typeIntervalMS = interval;
+	accuracy = _accuracy;
 	hasError = false;
 	firstConnect = true;
 	connected = false;

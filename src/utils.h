@@ -15,10 +15,10 @@
 
 class Utils {
 public:
-	static bool randBool(double prob) {
+	static bool randBool(double probFalse) {
 		std::knuth_b reng;
 		std::uniform_real_distribution<> uniform_0to1(0.0, 1.0);
-	    return uniform_0to1(reng) >= prob;
+	    return uniform_0to1(reng) < probFalse;
 	}
 	static std::vector<std::string> &split(const std::string &s, char delim, std::vector<std::string> &elems) {
 	    std::stringstream ss(s);

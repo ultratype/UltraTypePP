@@ -33,10 +33,13 @@ public:
 	string uname;
 	NTLogger* log;
 	bool connected;
-	NTClient();
+	NTClient(int, double);
 	~NTClient();
 	bool login(string, string);
 	bool connect();
+	// Typing options
+	int typeIntervalMS;
+	double accuracy;
 protected:
 	Hub* wsh;
 	string token; // Login token
