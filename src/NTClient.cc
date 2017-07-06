@@ -140,8 +140,12 @@ void NTClient::addListeners() {
 	});
 }
 void NTClient::onDisconnection(WebSocket<CLIENT>* wsocket, int code, char* msg, size_t len) {
+	/*
 	cout << "Disconn message: " << string(msg, len) << endl;
 	cout << "Disconn code: " << code << endl;
+	*/
+	log->type(LOG_CONN);
+	log->wr("WebSocket closed.\n");
 }
 void NTClient::handleData(WebSocket<CLIENT>* ws, json* j) {
 	// Uncomment to dump all raw JSON packets
@@ -264,4 +268,8 @@ void NTClient::handleRaceFinish(WebSocket<CLIENT>* ws, json* j) {
 	log->wr("The race took ");
 	log->operator<<(raceCompleteTime);
 	log->wrs(" seconds to complete\n");
+	this_thread::sleep_for(chrono::seconds(2)); // Sleep 2 seconds
+	log->type(LOG_CONN);
+	log->wr("Closing WebSocket...\n");
+	ws->close();
 }
