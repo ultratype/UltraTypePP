@@ -234,4 +234,9 @@ void NTClient::type(WebSocket<CLIENT>* ws) {
 	if (low < 10) {
 		low = 10;
 	}
+	sendTypePacket(ws, lidx, isRight);
+	lidx++;
+	int sleepFor = Utils::randInt(low, high);
+	this_thread::sleep_for(chrono::milliseconds(sleepFor));
+	type(ws); // Call the function until the lesson has been "typed"
 }
