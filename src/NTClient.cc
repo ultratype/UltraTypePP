@@ -173,6 +173,7 @@ void NTClient::handleData(WebSocket<CLIENT>* ws, json* j) {
 		lesson = j->operator[]("payload")["l"];
 		lessonLen = lesson.length();
 		lidx = 0;
+		this_thread::sleep_for(chrono::milliseconds(50));
 		type();
 	}
 }
@@ -226,7 +227,7 @@ void NTClient::type() {
 	// TODO : add typing function
 	int low = typeIntervalMS - 10;
 	int high = typeIntervalMS + 10;
-	bool isRight = Utils::randBool(accuracy);
+	bool isRight = Utils::randBool(accuracy);	
 	if (low < 10) {
 		low = 10;
 	}
