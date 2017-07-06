@@ -18,13 +18,11 @@ using namespace std;
 using namespace nlohmann;
 using namespace uWS;
 
-#define NTDEVV "13377898"
 #define NITROTYPE_HOSTNAME "www.nitrotype.com"
 #define NT_REALTIME_HOST "realtime1.nitrotype.com"
 #define NT_REALTIME_WS_ENDPOINT "wss://realtime1.nitrotype.com/realtime/"
 #define NT_PRIMUS_ENDPOINT "/realtime/"
 #define NT_LOGIN_ENDPOINT "/api/login"
-#define HTTP_PORT 80
 #define HTTPS_PORT 443
 typedef std::map<std::string, std::string> SMap;
 typedef std::pair<std::string, std::string> SPair;
