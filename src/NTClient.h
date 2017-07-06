@@ -40,6 +40,7 @@ public:
 	// Typing options
 	int typeIntervalMS;
 	double accuracy;
+	time_t lastRaceStart;
 protected:
 	// Properties
 	Hub* wsh;
