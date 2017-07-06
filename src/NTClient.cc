@@ -203,6 +203,20 @@ void NTClient::onConnection(WebSocket<CLIENT>* wsocket, HttpRequest req) {
 	// Send a probe, which is required for connection
 	wsocket->send("2probe", OpCode::TEXT);
 }
+void NTClient::sendTypePacket(WebSocket<CLIENT>* ws, int idx, bool isRight) {
+	json p = {
+		{"stream", "race"},
+		{"msg", "update"},
+		{"payload", {}}
+	};
+	if (isRight) {
+		p["payload"]["t"] = idx;
+	} else {
+		p["payload"]["e"] = idx;
+	}
+	string packet = "4" + p.dump();
+	ws->send(packet.c_str(), OpCode::TEXT);
+}
 void NTClient::type() {
 	// TODO : add typing function
 }
