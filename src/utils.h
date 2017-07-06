@@ -12,9 +12,14 @@
 #include <functional>
 #include <future>
 #include <random>
+#include <cstdlib>
+#include <ctime>
 
 class Utils {
 public:
+	static int randInt(int min, int max) {
+		return rand() % (max - min + 1) + min;
+	}
 	static bool randBool(double probFalse) {
 		std::knuth_b reng;
 		std::uniform_real_distribution<> uniform_0to1(0.0, 1.0);
