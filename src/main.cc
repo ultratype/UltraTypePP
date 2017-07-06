@@ -5,7 +5,7 @@ using namespace std;
 
 void initBot() {
 	NTClient nclient = NTClient(50, 0.92);
-	nclient.login("sfvea2", "123asd123"); // Throw-away account
+	nclient.login("dskfg4", "123asd123"); // Throw-away account
 	nclient.connect();
 }
 int main(int argc, char** argv) {
