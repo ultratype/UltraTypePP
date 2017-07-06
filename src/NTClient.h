@@ -31,9 +31,10 @@ typedef std::pair<std::string, std::string> SPair;
 class NTClient {
 public:
 	string uname;
-	NTLogger log;
+	NTLogger* log;
 	bool connected;
 	NTClient();
+	~NTClient();
 	bool login(string, string);
 	bool connect();
 protected:

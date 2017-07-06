@@ -5,8 +5,17 @@ NTClient::NTClient() {
 	hasError = false;
 	firstConnect = true;
 	connected = false;
+	log = new NTLogger("(Not logged in)");
+}
+NTClient::~NTClient() {
+	delete log;
+	if (wsh != nullptr) {
+		delete wsh;
+		wsh = nullptr;
+	}
 }
 bool NTClient::login(string username, string password) {
+	log->setUsername(username);
 	uname = username;
 	pword = password;
 	bool ret = true;
