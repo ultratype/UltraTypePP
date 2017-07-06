@@ -71,7 +71,6 @@ bool NTClient::connect() {
 	}
 	// cout << "Cookies: " << rawCookieStr << endl << endl;
 	// Create override headers
-	SMap customHeaders;
 	customHeaders["Cookie"] = rawCookieStr;
 	customHeaders["Origin"] = "https://www.nitrotype.com";
 	customHeaders["User-Agent"] = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/55.0.2883.87 Chrome/55.0.2883.87 Safari/537.36";
@@ -145,7 +144,13 @@ void NTClient::onDisconnection(WebSocket<CLIENT>* wsocket, int code, char* msg, 
 	cout << "Disconn code: " << code << endl;
 	*/
 	log->type(LOG_CONN);
-	log->wr("WebSocket closed.\n");
+	log->wr("Reconnecting to the realtime server...\n");
+	getPrimusSID();
+	rawCookieStr = Utils::stringifyCookies(&cookies);
+	stringstream uristream;
+	uristream  << "wss://realtime1.nitrotype.com:443/realtime/?_primuscb=" << time(0) << "-0&EIO=3&transport=websocket&sid=" << primusSid << "&t=" << time(0) << "&b64=1";
+	string wsURI = uristream.str();
+	wsh->connect(wsURI, (void*)this, customHeaders, 7000);
 }
 void NTClient::handleData(WebSocket<CLIENT>* ws, json* j) {
 	// Uncomment to dump all raw JSON packets

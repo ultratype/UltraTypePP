@@ -51,6 +51,7 @@ protected:
 	string primusSid;
 	string rawCookieStr;
 	vector<SPair> cookies;
+	SMap customHeaders;
 	string lesson; // Ciphered via ROT47, but deciphering is not needed due to the nature of typing packets.
 	int lessonLen;
 	int lidx;
