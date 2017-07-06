@@ -174,7 +174,7 @@ void NTClient::handleData(WebSocket<CLIENT>* ws, json* j) {
 		lessonLen = lesson.length();
 		lidx = 0;
 		this_thread::sleep_for(chrono::milliseconds(50));
-		type();
+		type(ws);
 	}
 }
 void NTClient::onMessage(WebSocket<CLIENT>* ws, char* msg, size_t len, OpCode opCode) {
@@ -223,7 +223,7 @@ void NTClient::sendTypePacket(WebSocket<CLIENT>* ws, int idx, bool isRight) {
 	string packet = "4" + p.dump();
 	ws->send(packet.c_str(), OpCode::TEXT);
 }
-void NTClient::type() {
+void NTClient::type(WebSocket<CLIENT>* ws) {
 	if (lidx > lessonLen) {
 		// All characters have been typed
 		return;

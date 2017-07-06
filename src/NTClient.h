@@ -65,7 +65,7 @@ protected:
 	void onMessage(WebSocket<CLIENT>*, char*, size_t, OpCode);
 	void handleData(WebSocket<CLIENT>*, json*);
 	void sendTypePacket(WebSocket<CLIENT>*, int, bool);
-	void type();
+	void type(WebSocket<CLIENT>*);
 };
 
 #endif
