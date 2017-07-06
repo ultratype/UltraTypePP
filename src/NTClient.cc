@@ -173,7 +173,7 @@ void NTClient::handleData(WebSocket<CLIENT>* ws, json* j) {
 		lesson = j->operator[]("payload")["l"];
 		lessonLen = lesson.length();
 		lidx = 0;
-		log->wr("Lesson length:");
+		log->wr("Lesson length: ");
 		log->operator<<(lessonLen);
 		log->ln();
 		this_thread::sleep_for(chrono::milliseconds(50));
