@@ -183,6 +183,13 @@ void NTClient::handleData(WebSocket<CLIENT>* ws, json* j) {
 		j->operator[]("payload")["racers"][0] &&
 		j->operator[]("payload")["racers"][0]["r"]) {
 			// Race has finished for this client
+			int raceCompleteTime = time(0) - lastRaceStart;
+			log->type(LOG_RACE);
+			log->wr("The race has finished.\n");
+			log->type(LOG_INFO);
+			log->wr("The race took ");
+			log->operator<<(raceCompleteTime);
+			log->wrs(" seconds to complete\n");
 	}
 }
 void NTClient::onMessage(WebSocket<CLIENT>* ws, char* msg, size_t len, OpCode opCode) {
