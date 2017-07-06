@@ -56,7 +56,6 @@ public:
 	}
 	void wr(string msg) {
 		writeTxt(msg);
-		writeLine();
 	}
 protected:
 	string fname;

@@ -15,6 +15,8 @@ NTClient::~NTClient() {
 	}
 }
 bool NTClient::login(string username, string password) {
+	log->type(LOG_HTTP);
+	log->wr("Logging into the NitroType account...\n");
 	log->setUsername(username);
 	uname = username;
 	pword = password;
@@ -34,7 +36,8 @@ bool NTClient::login(string username, string password) {
 			if (cookie.find("ntuserrem=") == 0) {
 				foundLoginCookie = true;
 				token = Utils::extractCValue(cookie);
-				cout << "Retrieved login token: " << token << endl;
+				log->type(LOG_HTTP);
+				log->wr("Resolved ntuserrem login token.\n");
 				// addCookie("ntuserrem", token);
 			}
 		}
@@ -57,7 +60,8 @@ bool NTClient::connect() {
 	stringstream uristream;
 	uristream  << "wss://realtime1.nitrotype.com:443/realtime/?_primuscb=" << tnow << "-0&EIO=3&transport=websocket&sid=" << primusSid << "&t=" << tnow << "&b64=1";
 	string wsURI = uristream.str();
-	cout << "Connecting to endpoint: " << wsURI << endl;
+	log->type(LOG_CONN);
+	log->wr("Attempting to open a WebSocket on NitroType realtime server...\n");
 	if (firstConnect) {
 		addListeners();
 	}
@@ -82,6 +86,8 @@ void NTClient::addCookie(string key, string val) {
 }
 bool NTClient::getPrimusSID() {
 	time_t tnow = time(0);
+	log->type(LOG_HTTP);
+	log->wr("Resolving Primus SID...\n");
 	rawCookieStr = Utils::stringifyCookies(&cookies);
 	stringstream squery;
 	squery << "?_primuscb=" << tnow << "-0&EIO=3&transport=polling&t=" << tnow << "-0&b64=1";
@@ -93,7 +99,8 @@ bool NTClient::getPrimusSID() {
 	if (res) {
 		json jres = json::parse(res->body.substr(4, res->body.length()));
 		primusSid = jres["sid"];
-		cout << "Resolved primus SID: " << primusSid << endl;
+		log->type(LOG_HTTP);
+		log->wr("Resolved Primus SID successfully.\n");
 		// addCookie("io", primusSid);
 	} else {
 		cout << "Error retrieving primus handshake data.\n";
@@ -115,11 +122,13 @@ void NTClient::addListeners() {
 		hasError = true;
 	});
 	wsh->onConnection([this](WebSocket<CLIENT>* wsocket, HttpRequest req) {
-		cout << "Realtime socket open" << endl;
+		log->type(LOG_CONN);
+		log->wr("Established a WebSocket connection with the realtime server.\n");
 		onConnection(wsocket, req);
 	});
 	wsh->onDisconnection([this](WebSocket<CLIENT>* wsocket, int code, char* msg, size_t len) {
-		cout << "Disconnected from the realtime server." << endl;
+		log->type(LOG_CONN);
+		log->wr("Disconnected from the realtime server.\n");
 		onDisconnection(wsocket, code, msg, len);
 	});
 	wsh->onMessage([this](WebSocket<CLIENT>* ws, char* msg, size_t len, OpCode opCode) {
@@ -134,7 +143,8 @@ void NTClient::handleData(WebSocket<CLIENT>* ws, json* j) {
 	// Uncomment to dump all raw JSON packets
 	// cout << "Recieved json data:" << endl << j->dump(4) << endl;
 	if (j->operator[]("msg") == "setup") {
-		cout << "I joined a race: " << endl << j->dump(4) << endl;
+		log->type(LOG_RACE);
+		log->wr("I joined a new race.\n");
 	}
 }
 void NTClient::onMessage(WebSocket<CLIENT>* ws, char* msg, size_t len, OpCode opCode) {
