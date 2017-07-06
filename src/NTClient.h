@@ -3,6 +3,7 @@
 
 #include "httplib.h"
 #include "json.hpp"
+#include "NTLogger.h"
 #include "utils.h"
 
 #include <iostream>
