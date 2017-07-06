@@ -224,7 +224,10 @@ void NTClient::sendTypePacket(WebSocket<CLIENT>* ws, int idx, bool isRight) {
 	ws->send(packet.c_str(), OpCode::TEXT);
 }
 void NTClient::type() {
-	// TODO : add typing function
+	if (lidx > lessonLen) {
+		// All characters have been typed
+		return;
+	}
 	int low = typeIntervalMS - 10;
 	int high = typeIntervalMS + 10;
 	bool isRight = Utils::randBool(accuracy);	
