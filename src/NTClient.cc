@@ -149,6 +149,7 @@ void NTClient::handleData(WebSocket<CLIENT>* ws, json* j) {
 	if (j->operator[]("msg") == "setup") {
 		log->type(LOG_RACE);
 		log->wr("I joined a new race.\n");
+		recievedEndPacket = false;
 	} else if (j->operator[]("msg") == "joined") {
 		string joinedName = j->operator[]("payload")["profile"]["username"];
 		string dispName;
@@ -183,14 +184,12 @@ void NTClient::handleData(WebSocket<CLIENT>* ws, json* j) {
 	} else if (j->operator[]("msg") == "update" &&
 		j->operator[]("payload")["racers"][0] != nullptr &&
 		j->operator[]("payload")["racers"][0]["r"] != nullptr) {
-			// Race has finished for this client
-			int raceCompleteTime = time(0) - lastRaceStart;
-			log->type(LOG_RACE);
-			log->wr("The race has finished.\n");
-			log->type(LOG_INFO);
-			log->wr("The race took ");
-			log->operator<<(raceCompleteTime);
-			log->wrs(" seconds to complete\n");
+			// Race has finished for a client
+			if (recievedEndPacket == false) {
+				// Ensures its this client
+				recievedEndPacket = true;
+				handleRaceFinish(ws, j);
+			}
 	}
 }
 void NTClient::onMessage(WebSocket<CLIENT>* ws, char* msg, size_t len, OpCode opCode) {
@@ -256,4 +255,13 @@ void NTClient::type(WebSocket<CLIENT>* ws) {
 	lidx++;
 	this_thread::sleep_for(chrono::milliseconds(sleepFor));
 	type(ws); // Call the function until the lesson has been "typed"
+}
+void NTClient::handleRaceFinish(WebSocket<CLIENT>* ws, json* j) {
+	int raceCompleteTime = time(0) - lastRaceStart;
+	log->type(LOG_RACE);
+	log->wr("The race has finished.\n");
+	log->type(LOG_INFO);
+	log->wr("The race took ");
+	log->operator<<(raceCompleteTime);
+	log->wrs(" seconds to complete\n");
 }

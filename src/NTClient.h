@@ -54,6 +54,7 @@ protected:
 	string lesson; // Ciphered via ROT47, but deciphering is not needed due to the nature of typing packets.
 	int lessonLen;
 	int lidx;
+	bool recievedEndPacket;
 	// Methods
 	bool hasError;
 	bool firstConnect;
@@ -65,6 +66,7 @@ protected:
 	void onDisconnection(WebSocket<CLIENT>*, int, char*, size_t);
 	void onMessage(WebSocket<CLIENT>*, char*, size_t, OpCode);
 	void handleData(WebSocket<CLIENT>*, json*);
+	void handleRaceFinish(WebSocket<CLIENT>*, json*);
 	void sendTypePacket(WebSocket<CLIENT>*, int, bool);
 	void type(WebSocket<CLIENT>*);
 };
