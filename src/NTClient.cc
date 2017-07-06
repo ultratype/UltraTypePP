@@ -181,7 +181,7 @@ void NTClient::handleData(WebSocket<CLIENT>* ws, json* j) {
 		this_thread::sleep_for(chrono::milliseconds(50));
 		type(ws);
 	} else if (j->operator[]("msg") == "update" &&
-		j->operator[]("payload")["racers"][0] &&
+		j->operator[]("payload")["racers"][0] != nullptr &&
 		j->operator[]("payload")["racers"][0]["r"]) {
 			// Race has finished for this client
 			int raceCompleteTime = time(0) - lastRaceStart;
