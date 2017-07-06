@@ -106,7 +106,7 @@ void NTClient::addListeners() {
 		hasError = true;
 	});
 	wsh->onConnection([this](WebSocket<CLIENT>* wsocket, HttpRequest req) {
-		cout << "Realtime socket open." << endl;
+		cout << "Realtime socket open" << endl;
 		onConnection(wsocket, req);
 	});
 	wsh->onDisconnection([this](WebSocket<CLIENT>* wsocket, int code, char* msg, size_t len) {
@@ -127,14 +127,20 @@ void NTClient::onMessage(WebSocket<CLIENT>* ws, char* msg, size_t len, OpCode op
 		return;
 	}
 	string smsg = string(msg, len);
-	cout << "Recieved WebSocket message: '" << smsg << "'\n";
+	if (smsg == "3probe") {
+		// Response to initial connection probe
+		cout << "Recieved response handshake\n";
+		ws->send("5", OpCode::TEXT);
+		// Join packet
+		this_thread::sleep_for(chrono::seconds(1));
+		string joinTo = getJoinPacket(20); // 20 WPM just to test
+		cout << joinTo << endl;
+		ws->send(joinTo.c_str(), OpCode::TEXT);
+	} else {
+		cout << "Recieved unknown WebSocket message: '" << smsg << "'\n";
+	}
 }
 void NTClient::onConnection(WebSocket<CLIENT>* wsocket, HttpRequest req) {
 	// Send a probe, which is required for connection
 	wsocket->send("2probe", OpCode::TEXT);
-	cout << "Requesting for a race in 2 seconds." << endl;
-	this_thread::sleep_for(chrono::seconds(2));
-	string joinTo = getJoinPacket(20); // 20 WPM just to test
-	cout << joinTo << endl;
-	wsocket->send(joinTo.c_str(), OpCode::TEXT);
 }
