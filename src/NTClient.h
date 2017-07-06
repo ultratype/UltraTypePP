@@ -41,6 +41,7 @@ public:
 	int typeIntervalMS;
 	double accuracy;
 protected:
+	// Properties
 	Hub* wsh;
 	string token; // Login token
 	string loginCookie; // For outgoing requests that require authentication
@@ -49,6 +50,10 @@ protected:
 	string primusSid;
 	string rawCookieStr;
 	vector<SPair> cookies;
+	string lesson; // Ciphered via ROT47, but deciphering is not needed due to the nature of typing packets.
+	int lessonLen;
+	int lidx;
+	// Methods
 	bool hasError;
 	bool firstConnect;
 	void addCookie(string, string);

@@ -7,6 +7,8 @@ NTClient::NTClient(int interval, double _accuracy) {
 	hasError = false;
 	firstConnect = true;
 	connected = false;
+	lessonLen = 0;
+	lidx = 0;
 	log = new NTLogger("(Not logged in)");
 }
 NTClient::~NTClient() {
@@ -168,6 +170,9 @@ void NTClient::handleData(WebSocket<CLIENT>* ws, json* j) {
 	} else if (j->operator[]("msg") == "status" && j->operator[]("payload")["status"] == "countdown") {
 		log->type(LOG_RACE);
 		log->wr("The race has started.\n");
+		lesson = j->operator[]("payload")["l"];
+		lessonLen = lesson.length();
+		lidx = 0;
 		type();
 	}
 }
