@@ -122,7 +122,11 @@ void NTClient::onDisconnection(WebSocket<CLIENT>* wsocket, int code, char* msg, 
 	cout << "Disconn code: " << code << endl;
 }
 void NTClient::handleData(WebSocket<CLIENT>* ws, json* j) {
-	cout << "Recieved json data:" << endl << j->dump(4) << endl;
+	// Uncomment to dump all raw JSON packets
+	// cout << "Recieved json data:" << endl << j->dump(4) << endl;
+	if (j->operator[]("msg") == "setup") {
+		cout << "I joined a race: " << endl << j->dump(4) << endl;
+	}
 }
 void NTClient::onMessage(WebSocket<CLIENT>* ws, char* msg, size_t len, OpCode opCode) {
 	if (opCode != OpCode::TEXT) {
