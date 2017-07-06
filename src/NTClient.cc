@@ -53,8 +53,13 @@ bool NTClient::login(string username, string password) {
 		ret = false;
 		cout << "Login request failed. This might be a network issue. Maybe try resetting your internet connection?\n";
 	}
-	bool success = getPrimusSID();
-	if (!success) return false;
+	if (ret == false) {
+		log->type(LOG_HTTP);
+		log->wr("Failed to log in. This account is most likely banned.\n");
+	} else {
+		bool success = getPrimusSID();
+		if (!success) return false;
+	}
 	return ret;
 }
 bool NTClient::connect() {
