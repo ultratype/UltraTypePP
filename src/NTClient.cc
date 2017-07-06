@@ -163,6 +163,9 @@ void NTClient::handleData(WebSocket<CLIENT>* ws, json* j) {
 			log->wrs(joinedName);
 			log->wrs("' joined the race.\n");
 		}
+	} else if (j->operator[]("msg") == "status" && j->operator[]("payload")["status"] == "countdown") {
+		log->type(LOG_RACE);
+		log->wr("The race has started.\n");
 	}
 }
 void NTClient::onMessage(WebSocket<CLIENT>* ws, char* msg, size_t len, OpCode opCode) {

@@ -101,7 +101,7 @@ protected:
 				break;
 			case LOG_CONN:
 				color = CLR_BLU;
-				out += "[CONNECT] ";
+				out += "[CONN] ";
 				break;
 			default:
 				cout << "Ignoring invalid log type!\n";
