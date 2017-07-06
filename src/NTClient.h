@@ -59,6 +59,7 @@ protected:
 	void onDisconnection(WebSocket<CLIENT>*, int, char*, size_t);
 	void onMessage(WebSocket<CLIENT>*, char*, size_t, OpCode);
 	void handleData(WebSocket<CLIENT>*, json*);
+	void type();
 };
 
 #endif

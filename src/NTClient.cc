@@ -168,6 +168,7 @@ void NTClient::handleData(WebSocket<CLIENT>* ws, json* j) {
 	} else if (j->operator[]("msg") == "status" && j->operator[]("payload")["status"] == "countdown") {
 		log->type(LOG_RACE);
 		log->wr("The race has started.\n");
+		type();
 	}
 }
 void NTClient::onMessage(WebSocket<CLIENT>* ws, char* msg, size_t len, OpCode opCode) {
@@ -201,4 +202,7 @@ void NTClient::onMessage(WebSocket<CLIENT>* ws, char* msg, size_t len, OpCode op
 void NTClient::onConnection(WebSocket<CLIENT>* wsocket, HttpRequest req) {
 	// Send a probe, which is required for connection
 	wsocket->send("2probe", OpCode::TEXT);
+}
+void NTClient::type() {
+	// TODO : add typing function
 }
