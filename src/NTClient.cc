@@ -1,8 +1,8 @@
 #include "NTClient.h"
 using namespace std;
 
-NTClient::NTClient(int interval, double _accuracy) {
-	typeIntervalMS = interval;
+NTClient::NTClient(int wpm, double _accuracy) {
+	typeIntervalMS = 12000 / wpm;
 	accuracy = _accuracy;
 	hasError = false;
 	firstConnect = true;
