@@ -106,7 +106,7 @@ void NTClient::addListeners() {
 		hasError = true;
 	});
 	wsh->onConnection([this](WebSocket<CLIENT>* wsocket, HttpRequest req) {
-		cout << "Connected to the realtime server." << endl;
+		cout << "Realtime socket open." << endl;
 		onConnection(wsocket, req);
 	});
 	wsh->onDisconnection([this](WebSocket<CLIENT>* wsocket, int code, char* msg, size_t len) {
@@ -132,9 +132,9 @@ void NTClient::onMessage(WebSocket<CLIENT>* ws, char* msg, size_t len, OpCode op
 void NTClient::onConnection(WebSocket<CLIENT>* wsocket, HttpRequest req) {
 	// Send a probe, which is required for connection
 	wsocket->send("2probe", OpCode::TEXT);
-	cout << "Requesting for a race in 1 second." << endl;
-	this_thread::sleep_for(chrono::seconds(1));
-	string joinTo = getJoinPacket(20); // 100 WPM just to test
+	cout << "Requesting for a race in 2 seconds." << endl;
+	this_thread::sleep_for(chrono::seconds(2));
+	string joinTo = getJoinPacket(20); // 20 WPM just to test
 	cout << joinTo << endl;
-	wsocket->send(joinTo.c_str());
+	wsocket->send(joinTo.c_str(), OpCode::TEXT);
 }
