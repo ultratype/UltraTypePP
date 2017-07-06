@@ -27,6 +27,9 @@ public:
 		hasFile = true;
 		stream.open(_fname);
 	}
+	void setUsername(string newUname) {
+		username = newUname;
+	}
 	void close() {
 		if (closed == false && hasFile == true) {
 			closed = true;
