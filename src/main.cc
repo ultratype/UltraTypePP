@@ -53,5 +53,7 @@ int main(int argc, char** argv) {
 		errlog("Failed to open the JSON config. For help, read the UltraType++ repository README, or use --help.\n");
 		return 1;
 	}
+	// Read entire stream into string
+	string fdata(istreambuf_iterator<char>(configf), {});
 	return 0;
 }
