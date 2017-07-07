@@ -1,8 +1,9 @@
 #include "NTClient.h"
 using namespace std;
 
-NTClient::NTClient(int wpm, double _accuracy) {
-	typeIntervalMS = 12000 / wpm;
+NTClient::NTClient(int _wpm, double _accuracy) {
+	typeIntervalMS = 12000 / _wpm;
+	wpm = _wpm;
 	accuracy = _accuracy;
 	hasError = false;
 	firstConnect = true;
@@ -273,7 +274,9 @@ void NTClient::type(WebSocket<CLIENT>* ws) {
 		log->operator<<((int)lidx);
 		log->wrs(" / ");
 		log->operator<<((int)lessonLen);
-		log->wrs(" characters)");
+		log->wrs(" characters at ");
+		log->operator<<((int)wpm);
+		log->wrs(" WPM)");
 		log->ln();
 	}
 	// cout << "Typing with index: " << lidx << ", isRight: " << isRight << ", sleepFor: " << sleepFor << endl;

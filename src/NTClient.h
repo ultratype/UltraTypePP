@@ -41,6 +41,7 @@ public:
 	int typeIntervalMS;
 	double accuracy;
 	time_t lastRaceStart;
+	int wpm;
 protected:
 	// Properties
 	Hub* wsh;
