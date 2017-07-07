@@ -11,9 +11,12 @@ NTClient::NTClient(int _wpm, double _accuracy) {
 	lessonLen = 0;
 	lidx = 0;
 	log = new NTLogger("(Not logged in)");
+	wsh = nullptr;
 }
 NTClient::~NTClient() {
-	delete log;
+	if (log != nullptr) {
+		delete log;
+	}
 	if (wsh != nullptr) {
 		delete wsh;
 		wsh = nullptr;
