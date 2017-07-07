@@ -45,6 +45,12 @@ public:
 			stream << msgi;
 		}
 	}
+	void operator<<(double msgi) {
+		cout << STYLE_BOLD << CLR_RED << msgi << CLR_RESET;
+		if (hasFile) {
+			stream << msgi;
+		}
+	}
 	void operator<<(unsigned char type) { // Unsigned char type to allow integers to be written to the stream
 		writeType(type);
 	}

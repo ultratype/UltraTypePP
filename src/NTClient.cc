@@ -264,7 +264,19 @@ void NTClient::type(WebSocket<CLIENT>* ws) {
 	if (low < 10) {
 		low = 10;
 	}
-	cout << "Typing with index: " << lidx << ", isRight: " << isRight << ", sleepFor: " << sleepFor << endl;
+	if (lidx % 25 == 0) { // Display info every 25 characters
+		// Log race updated
+		log->type(LOG_INFO);
+		log->wr("I have finished ");
+		log->operator<<((((double)lidx) / ((double)lessonLen)) * 100.00);
+		log->wrs("% of the race (");
+		log->operator<<((int)lidx);
+		log->wrs(" / ");
+		log->operator<<((int)lessonLen);
+		log->wrs(" characters)");
+		log->ln();
+	}
+	// cout << "Typing with index: " << lidx << ", isRight: " << isRight << ", sleepFor: " << sleepFor << endl;
 	sendTypePacket(ws, lidx, isRight);
 	lidx++;
 	this_thread::sleep_for(chrono::milliseconds(sleepFor));
