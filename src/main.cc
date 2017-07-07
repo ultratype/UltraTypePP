@@ -8,16 +8,20 @@
 #include <string>
 using namespace std;
 
-void initBot(string username, string password, int wpm, double acc) {
-	NTClient nclient = NTClient(wpm, acc);
-	nclient.login(username, password);
-	nclient.connect();
-}
 void initlog(string msg) {
 	cout << CLR_GRN << STYLE_BOLD << "[INIT] " << CLR_RESET << CLR_WHT << msg << CLR_RESET;
 }
 void errlog(string msg) {
 	cout << CLR_RED << STYLE_BOLD << "[ERR!] " << CLR_RESET << CLR_WHT << msg << CLR_RESET;
+}
+void initBot(string username, string password, int wpm, double acc) {
+	NTClient nclient = NTClient(wpm, acc);
+	bool success = nclient.login(username, password);
+	if (success) {
+		nclient.connect();
+	} else {
+		errlog("Failed to log in to the account.\n");
+	}
 }
 int main(int argc, char** argv) {
 	srand(static_cast<unsigned int>(time(0)));
@@ -55,5 +59,27 @@ int main(int argc, char** argv) {
 	}
 	// Read entire stream into string
 	string fdata(istreambuf_iterator<char>(configf), {});
+	json jdata;
+	try {
+		jdata = json::parse(fdata);
+	} catch (const exception& e) {
+		errlog("Failed to parse the JSON config file. Maybe read over it for syntax errors?\n");
+		return 1;
+	}
+	string uname;
+	string pword;
+	int wpm;
+	double accuracy;
+	try {
+		uname = jdata["username"];
+		pword = jdata["username"];
+		wpm = jdata["wpm"];
+		accuracy = jdata["accuracy"];
+	} catch (const exception& e) {
+		errlog("One of the values in the config is invalid. Maybe read over it for errors?\n");
+		return 1;
+	}
+	initlog("Read and parsed config file.\n");
+	initBot(uname, pword, wpm, accuracy);
 	return 0;
 }
