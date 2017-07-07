@@ -72,7 +72,7 @@ int main(int argc, char** argv) {
 	double accuracy;
 	try {
 		uname = jdata["username"];
-		pword = jdata["username"];
+		pword = jdata["password"];
 		wpm = jdata["wpm"];
 		accuracy = jdata["accuracy"];
 	} catch (const exception& e) {
