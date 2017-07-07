@@ -20,7 +20,7 @@ void initBot(string username, string password, int wpm, double acc) {
 	if (success) {
 		nclient.connect();
 	} else {
-		errlog("Failed to log in to the account.\n");
+		errlog("Failed to log in to the account. Exiting the program.\n");
 	}
 }
 int main(int argc, char** argv) {
