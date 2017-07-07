@@ -51,11 +51,13 @@ bool NTClient::login(string username, string password) {
 		}
 		if (!foundLoginCookie) {
 			ret = false;
-			cout << "Unable to locate the login cookie. Maybe try a different account?\n";
+			log->type(LOG_HTTP);
+			log->wr("Unable to locate the login cookie. Maybe try a different account?\n");
 		}
 	} else {
 		ret = false;
-		cout << "Login request failed. This might be a network issue. Maybe try resetting your internet connection?\n";
+		log->type(LOG_HTTP);
+		log->wr("Login request failed. This might be a network issue. Maybe try resetting your internet connection?\n");
 	}
 	if (ret == false) {
 		log->type(LOG_HTTP);
