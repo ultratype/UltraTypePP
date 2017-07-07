@@ -123,11 +123,18 @@ bool NTClient::getPrimusSID() {
 	return true;
 }
 string NTClient::getJoinPacket(int avgSpeed) {
-	stringstream ss;
-	ss << "4{\"stream\":\"race\",\"msg\":\"join\",\"payload\":{\"debugging\":false,\"avgSpeed\":"
-	<< avgSpeed
-	<< ",\"forceEarlyPlace\":true,\"track\":\"desert\",\"music\":\"city_nights\"}}";
-	return ss.str();
+	json p = {
+		{"stream", "race"},
+		{"msg", "join"},
+		{"payload", {
+			{"avgSpeed", avgSpeed},
+			{"debugging", false},
+			{"music", "standard"},
+			{"track", "forest"},
+			{"update", 3417}
+		}}
+	};
+	return "4" + p.dump();
 }
 void NTClient::addListeners() {
 	assert(wsh != nullptr);
