@@ -297,8 +297,8 @@ void NTClient::handleRaceFinish(WebSocket<CLIENT>* ws, json* j) {
 	log->type(LOG_INFO);
 	log->wr("The race took ");
 	log->operator<<(raceCompleteTime);
-	log->wrs(" seconds to complete.\n");
-	this_thread::sleep_for(chrono::seconds(10)); // Sleep 10 seconds
+	log->wrs(" seconds to complete. Waiting a bit before the next race.\n");
+	this_thread::sleep_for(chrono::seconds(20));
 	log->type(LOG_CONN);
 	log->wr("Closing WebSocket...\n");
 	ws->close();
