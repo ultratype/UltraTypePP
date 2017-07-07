@@ -20,6 +20,7 @@ void errlog(string msg) {
 	cout << CLR_RED << STYLE_BOLD << "[ERR!] " << CLR_RESET << CLR_WHT << msg << CLR_RESET;
 }
 int main(int argc, char** argv) {
+	srand(static_cast<unsigned int>(time(0)));
 	bool useCustomConfig = false;
 	string customConfig;
 	for (int i = 0; i < argc; ++i) {
@@ -33,16 +34,23 @@ int main(int argc, char** argv) {
 				<< "	--help or -h: Display this help message." << endl
 				<< "	--config <filename> or -c <filename>: Load the config from the specified file." << endl;
 				return 0;
+			} else if (arg == "--config" || arg == "-c") {
+				customConfig = string(argv[i + 1]);
+				useCustomConfig = true;
 			}
 		}
-	}	
-	srand(static_cast<unsigned int>(time(0)));
+	}
 	ifstream configf;
 	configf.exceptions(std::ios::failbit | std::ios::badbit);
+	initlog("Attempting to read config file...\n");
 	try {
-		configf.open("config.json");
+		if (useCustomConfig) {
+			configf.open(customConfig.c_str());
+		} else {
+			configf.open("config.json");
+		}
 	} catch(const exception& e) {
-		errlog("Failed to open the JSON config. For help, read the UltraType++ repository README.\n");
+		errlog("Failed to open the JSON config. For help, read the UltraType++ repository README, or use --help.\n");
 		return 1;
 	}
 	return 0;
