@@ -1,11 +1,14 @@
 #include "NTClient.h"
 #include "colors.h"
 #include "json.hpp"
+#include "Account.h"
 
 #include <iostream>
 #include <cstdlib>
 #include <fstream>
 #include <string>
+#include <thread>
+#include <vector>
 using namespace std;
 
 void initlog(string msg) {
@@ -66,26 +69,38 @@ int main(int argc, char** argv) {
 		errlog("Failed to parse the JSON config file. Maybe read over it for syntax errors?\n");
 		return 1;
 	}
-	string uname;
-	string pword;
-	int wpm;
-	double accuracy;
 	bool multiAcc = false;
 	try {
-		uname = jdata["username"];
-		pword = jdata["password"];
-		wpm = jdata["wpm"];
-		accuracy = jdata["accuracy"];
 		multiAcc = jdata["multi_accont"];
 	} catch (const exception& e) {
-		errlog("One of the values in the config is invalid. Maybe read over it for errors?\n");
+		errlog("Failed to detect multi account. Maybe read over it for errors?\n");
 		return 1;
 	}
 	initlog("Read and parsed config file.\n");
 	if (!multiAcc) {
+		string uname = jdata["username"];
+		string pword = jdata["password"];
+		int wpm = jdata["wpm"];
+		double accuracy = jdata["accuracy"];
 		initSingleBot(uname, pword, wpm, accuracy);
 	} else {
-		// 
+		json jaccs = jdata["accounts"];
+		for (json& ac : jaccs) {
+			string aname;
+			string apass;
+			int awpm;
+			double aacc;
+			try {
+				aname = ac["user"];
+				apass = ac["pass"];
+				awpm = ac["wpm"];
+				aacc = ac["accuracy"];
+			} catch (const exception& e) {
+				errlog("Failed to parse accounts. Maybe read over it for errors?\n");
+				return 1;
+			}
+			Account a = Account(aname, apass, awpm, aacc);
+		}
 	}
 	return 0;
 }
