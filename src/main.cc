@@ -14,7 +14,7 @@ void initlog(string msg) {
 void errlog(string msg) {
 	cout << CLR_RED << STYLE_BOLD << "[ERR!] " << CLR_RESET << CLR_WHT << msg << CLR_RESET;
 }
-void initBot(string username, string password, int wpm, double acc) {
+void initSingleBot(string username, string password, int wpm, double acc) {
 	NTClient nclient = NTClient(wpm, acc);
 	bool success = nclient.login(username, password);
 	if (success) {
@@ -70,16 +70,22 @@ int main(int argc, char** argv) {
 	string pword;
 	int wpm;
 	double accuracy;
+	bool multiAcc = false;
 	try {
 		uname = jdata["username"];
 		pword = jdata["password"];
 		wpm = jdata["wpm"];
 		accuracy = jdata["accuracy"];
+		multiAcc = jdata["multi_accont"];
 	} catch (const exception& e) {
 		errlog("One of the values in the config is invalid. Maybe read over it for errors?\n");
 		return 1;
 	}
 	initlog("Read and parsed config file.\n");
-	initBot(uname, pword, wpm, accuracy);
+	if (!multiAcc) {
+		initSingleBot(uname, pword, wpm, accuracy);
+	} else {
+		// 
+	}
 	return 0;
 }
