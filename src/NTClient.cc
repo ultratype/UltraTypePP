@@ -256,6 +256,9 @@ void NTClient::onMessage(WebSocket<CLIENT>* ws, char* msg, size_t len, OpCode op
 void NTClient::onConnection(WebSocket<CLIENT>* wsocket, HttpRequest req) {
 	// Send a probe, which is required for connection
 	wsocket->send("2probe", OpCode::TEXT);
+	lidx = 0;
+	rIdx = 0;
+	eIdx = 0;
 }
 void NTClient::sendTypePacket(WebSocket<CLIENT>* ws, int idx, string typeType) {
 	json p = {
