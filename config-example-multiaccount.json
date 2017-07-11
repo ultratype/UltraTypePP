@@ -2,15 +2,15 @@
 	"multi_accont": true,
 	"accounts": [
 		{
-			"user": "fenoi5",
-			"pass": "123asd123",
+			"user": "username1",
+			"pass": "secretpassword123",
 			"wpm": 100,
-			"accuracy": 0.95
+			"accuracy": 0.99
 		},
 		{
-			"user": "grideh5",
-			"pass": "123asd123",
-			"wpm": 100,
+			"user": "username2",
+			"pass": "secreterpassword123",
+			"wpm": 120,
 			"accuracy": 0.95
 		}
 	]
