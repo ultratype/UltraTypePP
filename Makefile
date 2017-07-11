@@ -6,7 +6,7 @@ CC=clang++
 
 # Windows stuff
 WINCC=i686-w64-mingw32-g++
-WINOUT=./UltraType+++
+WINOUT=./UltraType++
 
 default:
 	$(CC) $(OPTS) $(SRC) -o $(OUT)
