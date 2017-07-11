@@ -164,6 +164,9 @@ void NTClient::onDisconnection(WebSocket<CLIENT>* wsocket, int code, char* msg, 
 	cout << "Disconn message: " << string(msg, len) << endl;
 	cout << "Disconn code: " << code << endl;
 	*/
+	lidx = 0;
+	rIdx = 0;
+	eIdx = 0;
 	log->type(LOG_CONN);
 	log->wr("Reconnecting to the realtime server...\n");
 	getPrimusSID();
