@@ -19,6 +19,7 @@ NTClient::NTClient(int _wpm, double _accuracy) {
 NTClient::~NTClient() {
 	if (log != nullptr) {
 		delete log;
+		log = nullptr;
 	}
 	if (wsh != nullptr) {
 		delete wsh;

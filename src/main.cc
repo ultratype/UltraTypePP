@@ -5,17 +5,41 @@
 
 #include <iostream>
 #include <cstdlib>
+#include <cstdio>
 #include <fstream>
 #include <string>
 #include <thread>
 #include <vector>
 using namespace std;
+vector<Account> accounts;
+vector<thread> threads;
+std::mutex tlock;
 
 void initlog(string msg) {
 	cout << CLR_GRN << STYLE_BOLD << "[INIT] " << CLR_RESET << CLR_WHT << msg << CLR_RESET;
 }
 void errlog(string msg) {
 	cout << CLR_RED << STYLE_BOLD << "[ERR!] " << CLR_RESET << CLR_WHT << msg << CLR_RESET;
+}
+void threadCallback(Account a) {
+	NTClient cli(a.wpm, a.acc);
+	bool success = cli.login(a.name, a.pass);
+	if (success) {
+		cli.connect();
+	} else {
+		errlog("Failed to log in to an account.\n");
+	}
+}
+void initMultiBot() {
+	initlog("Starting accounts...\n");
+	for (int i = 0; i < accounts.size(); ++i) {
+		tlock.lock();
+		thread t(threadCallback, accounts.at(i));
+		t.detach();
+		tlock.unlock();
+	}
+	initlog("Press enter to terminate the bots.");
+	getchar();
 }
 void initSingleBot(string username, string password, int wpm, double acc) {
 	NTClient nclient = NTClient(wpm, acc);
@@ -77,7 +101,8 @@ int main(int argc, char** argv) {
 		return 1;
 	}
 	initlog("Read and parsed config file.\n");
-	if (!multiAcc) {
+	if (multiAcc == false) {
+		cout << "multiacc: " << multiAcc << endl;
 		string uname = jdata["username"];
 		string pword = jdata["password"];
 		int wpm = jdata["wpm"];
@@ -100,7 +125,9 @@ int main(int argc, char** argv) {
 				return 1;
 			}
 			Account a = Account(aname, apass, awpm, aacc);
+			accounts.push_back(a);
 		}
+		initMultiBot();
 	}
 	return 0;
 }

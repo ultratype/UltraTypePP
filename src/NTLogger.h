@@ -20,20 +20,12 @@ public:
 		hasFile = false;
 		username = uname;
 	}
-	NTLogger(string uname, string _fname) {
-		fname = _fname;
-		username = uname;
-		stream = ofstream();
-		hasFile = true;
-		stream.open(_fname);
-	}
 	void setUsername(string newUname) {
 		username = newUname;
 	}
 	void close() {
 		if (closed == false && hasFile == true) {
 			closed = true;
-			stream.close();
 		}
 	}
 	void operator<<(string msg) {
@@ -41,15 +33,9 @@ public:
 	}
 	void operator<<(int msgi) {
 		cout << STYLE_BOLD << CLR_RED << msgi << CLR_RESET;
-		if (hasFile) {
-			stream << msgi;
-		}
 	}
 	void operator<<(double msgi) {
 		cout << STYLE_BOLD << CLR_RED << msgi << CLR_RESET;
-		if (hasFile) {
-			stream << msgi;
-		}
 	}
 	void operator<<(unsigned char type) { // Unsigned char type to allow integers to be written to the stream
 		writeType(type);
@@ -68,22 +54,15 @@ public:
 	}
 protected:
 	string fname;
-	ofstream stream;
 	bool closed;
 	bool hasFile;
 	string username;
 	void writeTxt(string msg) {
 		cout << STYLE_BOLD << STYLE_UNDERLN << CLR_YEL << username << ":" << CLR_RESET
 		<< " " << CLR_WHT << msg << CLR_RESET;
-		if (hasFile) {
-			stream << username << ": " << msg;
-		}
 	}
 	void writeLine() {
 		cout << '\n';
-		if (hasFile) {
-			stream << '\n';
-		}
 	}
 	void writeType(unsigned char type) { // Unsigned char type to allow integers to be written to the stream
 		if (type == lln) {
@@ -114,9 +93,6 @@ protected:
 				break;
 		}
 		cout << STYLE_ITALIC << color << out << CLR_RESET;
-		if (hasFile) {
-			stream << out;
-		}
 	}
 };
 
