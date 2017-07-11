@@ -59,7 +59,6 @@ protected:
 	int rIdx;
 	int eIdx;
 	bool recievedEndPacket;
-	bool raceFinished;
 	// Methods
 	bool hasError;
 	bool firstConnect;

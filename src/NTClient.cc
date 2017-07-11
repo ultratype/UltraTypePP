@@ -163,9 +163,6 @@ void NTClient::onDisconnection(WebSocket<CLIENT>* wsocket, int code, char* msg, 
 	cout << "Disconn message: " << string(msg, len) << endl;
 	cout << "Disconn code: " << code << endl;
 	*/
-	rIdx = 0;
-	eIdx = 0;
-	raceFinished = false;
 	log->type(LOG_CONN);
 	log->wr("Reconnecting to the realtime server...\n");
 	getPrimusSID();
@@ -182,6 +179,8 @@ void NTClient::handleData(WebSocket<CLIENT>* ws, json* j) {
 		log->type(LOG_RACE);
 		log->wr("I joined a new race.\n");
 		recievedEndPacket = false;
+		rIdx = 0;
+		eIdx = 0;
 	} else if (j->operator[]("msg") == "joined") {
 		string joinedName = j->operator[]("payload")["profile"]["username"];
 		string dispName;
@@ -254,9 +253,6 @@ void NTClient::onMessage(WebSocket<CLIENT>* ws, char* msg, size_t len, OpCode op
 void NTClient::onConnection(WebSocket<CLIENT>* wsocket, HttpRequest req) {
 	// Send a probe, which is required for connection
 	wsocket->send("2probe", OpCode::TEXT);
-	rIdx = 0;
-	eIdx = 0;
-	raceFinished = false;
 }
 void NTClient::sendTypePacket(WebSocket<CLIENT>* ws, int idx, string typeType) {
 	json p = {
@@ -270,7 +266,8 @@ void NTClient::sendTypePacket(WebSocket<CLIENT>* ws, int idx, string typeType) {
 	ws->send(packet.c_str(), OpCode::TEXT);
 }
 void NTClient::type(WebSocket<CLIENT>* ws) {
-	if (rIdx > lessonLen) {
+	if (rIdx > lessonLen ||
+		rIdx > (lessonLen + 10)) {
 		// All characters have been typed
 		return;
 	}
@@ -306,7 +303,6 @@ void NTClient::type(WebSocket<CLIENT>* ws) {
 	type(ws); // Call the function until the lesson has been "typed"
 }
 void NTClient::handleRaceFinish(WebSocket<CLIENT>* ws, json* j) {
-	raceFinished = true;
 	racesCompleted++;
 	int raceCompleteTime = time(0) - lastRaceStart;
 	rIdx = 0;
