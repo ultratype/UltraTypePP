@@ -26,5 +26,5 @@ If you are skeptic and/or want proof of this, [feel free to view the source code
 
 # How can I use the config / use multiple accounts?
 If you want to see examples of UltraType configurations see these files:
-- [Single account / Basic config]()
-- [Multiple accounts]()
+- [Single account / Basic config](https://github.com/ultratype/UltraTypePP/blob/master/config-example.json)
+- [Multiple accounts](https://github.com/ultratype/UltraTypePP/blob/master/config-example-multiaccount.json)
