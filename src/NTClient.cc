@@ -12,6 +12,7 @@ NTClient::NTClient(int _wpm, double _accuracy) {
 	lidx = 0;
 	log = new NTLogger("(Not logged in)");
 	wsh = nullptr;
+	racesCompleted = 0;
 }
 NTClient::~NTClient() {
 	if (log != nullptr) {
@@ -298,6 +299,7 @@ void NTClient::type(WebSocket<CLIENT>* ws) {
 	type(ws); // Call the function until the lesson has been "typed"
 }
 void NTClient::handleRaceFinish(WebSocket<CLIENT>* ws, json* j) {
+	racesCompleted++;
 	int raceCompleteTime = time(0) - lastRaceStart;
 	log->type(LOG_RACE);
 	log->wr("The race has finished.\n");
@@ -305,6 +307,10 @@ void NTClient::handleRaceFinish(WebSocket<CLIENT>* ws, json* j) {
 	log->wr("The race took ");
 	log->operator<<(raceCompleteTime);
 	log->wrs(" seconds to complete. Waiting a bit before the next race.\n");
+	log->type(LOG_RACE);
+	log->wr("I have completed ");
+	log->operator<<(racesCompleted);
+	log->wrs(" races.\n");
 	this_thread::sleep_for(chrono::seconds(20));
 	log->type(LOG_CONN);
 	log->wr("Closing WebSocket...\n");

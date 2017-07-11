@@ -42,6 +42,7 @@ public:
 	double accuracy;
 	time_t lastRaceStart;
 	int wpm;
+	int racesCompleted;
 protected:
 	// Properties
 	Hub* wsh;
