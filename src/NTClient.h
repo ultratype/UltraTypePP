@@ -61,6 +61,7 @@ protected:
 	bool recievedEndPacket;
 	// Methods
 	bool hasError;
+	bool finished;
 	bool firstConnect;
 	void addCookie(string, string);
 	bool getPrimusSID();
@@ -70,7 +71,7 @@ protected:
 	void onDisconnection(WebSocket<CLIENT>*, int, char*, size_t);
 	void onMessage(WebSocket<CLIENT>*, char*, size_t, OpCode);
 	void handleData(WebSocket<CLIENT>*, json*);
-	void handleRaceFinish(WebSocket<CLIENT>*, json*);
+	void handleRaceFinish(WebSocket<CLIENT>*);
 	void sendTypePacket(WebSocket<CLIENT>*, int, string);
 	void type(WebSocket<CLIENT>*);
 };

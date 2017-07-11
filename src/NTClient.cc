@@ -8,6 +8,7 @@ NTClient::NTClient(int _wpm, double _accuracy) {
 	hasError = false;
 	firstConnect = true;
 	connected = false;
+	finished = false;
 	lessonLen = 0;
 	log = new NTLogger("(Not logged in)");
 	wsh = nullptr;
@@ -78,7 +79,7 @@ bool NTClient::connect() {
 	uristream  << "wss://realtime1.nitrotype.com:443/realtime/?_primuscb=" << tnow << "-0&EIO=3&transport=websocket&sid=" << primusSid << "&t=" << tnow << "&b64=1";
 	string wsURI = uristream.str();
 	log->type(LOG_CONN);
-	log->wr("Attempting to open a WebSocket on NitroType realtime server...\n");
+	log->wr("Attempting to connect to the NitroType realtime server...\n");
 	if (firstConnect) {
 		addListeners();
 	}
@@ -181,6 +182,7 @@ void NTClient::handleData(WebSocket<CLIENT>* ws, json* j) {
 		recievedEndPacket = false;
 		rIdx = 0;
 		eIdx = 0;
+		finished = false;
 	} else if (j->operator[]("msg") == "joined") {
 		string joinedName = j->operator[]("payload")["profile"]["username"];
 		string dispName;
@@ -218,7 +220,7 @@ void NTClient::handleData(WebSocket<CLIENT>* ws, json* j) {
 			if (recievedEndPacket == false) {
 				// Ensures its this client
 				recievedEndPacket = true;
-				handleRaceFinish(ws, j);
+				handleRaceFinish(ws);
 			}
 	}
 }
@@ -266,9 +268,11 @@ void NTClient::sendTypePacket(WebSocket<CLIENT>* ws, int idx, string typeType) {
 	ws->send(packet.c_str(), OpCode::TEXT);
 }
 void NTClient::type(WebSocket<CLIENT>* ws) {
-	if (rIdx > lessonLen ||
-		rIdx > (lessonLen + 10)) {
+	if (rIdx > lessonLen) {
 		// All characters have been typed
+		if (!finished) {
+			handleRaceFinish(ws);
+		}
 		return;
 	}
 	int low = typeIntervalMS - 15;
@@ -302,7 +306,8 @@ void NTClient::type(WebSocket<CLIENT>* ws) {
 	this_thread::sleep_for(chrono::milliseconds(sleepFor));
 	type(ws); // Call the function until the lesson has been "typed"
 }
-void NTClient::handleRaceFinish(WebSocket<CLIENT>* ws, json* j) {
+void NTClient::handleRaceFinish(WebSocket<CLIENT>* ws) {
+	finished = true;
 	racesCompleted++;
 	int raceCompleteTime = time(0) - lastRaceStart;
 	rIdx = 0;
