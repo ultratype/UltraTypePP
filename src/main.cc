@@ -102,7 +102,6 @@ int main(int argc, char** argv) {
 	}
 	initlog("Read and parsed config file.\n");
 	if (multiAcc == false) {
-		cout << "multiacc: " << multiAcc << endl;
 		string uname = jdata["username"];
 		string pword = jdata["password"];
 		int wpm = jdata["wpm"];
