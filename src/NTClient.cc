@@ -271,8 +271,8 @@ void NTClient::type(WebSocket<CLIENT>* ws) {
 		// All characters have been typed
 		return;
 	}
-	int low = typeIntervalMS - 10;
-	int high = typeIntervalMS + 10;
+	int low = typeIntervalMS - 30;
+	int high = typeIntervalMS + 25;
 	bool isRight = Utils::randBool(accuracy);
 	int sleepFor = Utils::randInt(low, high);
 	if (low < 10) {
