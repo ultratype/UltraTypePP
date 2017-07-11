@@ -1,5 +1,6 @@
 # What is UltraType++?
 UltraType++ is a complete NitroType bot, written in C++. It will race on any account for you, at any WPM or accuracy that you desire.
+![UltraType++ bots on the leaderboard](https://i.imgur.com/oOdnFNE.png)
 
 # What can UltraType++ do?
 Here is a list of features that UltraType++ supports:
