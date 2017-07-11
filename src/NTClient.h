@@ -59,16 +59,15 @@ protected:
 	int rIdx;
 	int eIdx;
 	bool recievedEndPacket;
-	// Methods
-	bool hasError;
 	bool finished;
 	bool firstConnect;
+	// Methods
 	void addCookie(string, string);
 	bool getPrimusSID();
 	string getJoinPacket(int);
 	void addListeners();
 	void onConnection(WebSocket<CLIENT>*, HttpRequest);
-	void onDisconnection(WebSocket<CLIENT>*, int, char*, size_t);
+	void onDisconnection();
 	void onMessage(WebSocket<CLIENT>*, char*, size_t, OpCode);
 	void handleData(WebSocket<CLIENT>*, json*);
 	void handleRaceFinish(WebSocket<CLIENT>*);

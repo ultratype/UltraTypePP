@@ -5,7 +5,6 @@ NTClient::NTClient(int _wpm, double _accuracy) {
 	typeIntervalMS = 12000 / _wpm;
 	wpm = _wpm;
 	accuracy = _accuracy;
-	hasError = false;
 	firstConnect = true;
 	connected = false;
 	finished = false;
@@ -143,8 +142,9 @@ string NTClient::getJoinPacket(int avgSpeed) {
 void NTClient::addListeners() {
 	assert(wsh != nullptr);
 	wsh->onError([this](void* udata) {
-		cout << "Failed to connect to WebSocket server." << endl;
-		hasError = true;
+		log->type(LOG_CONN);
+		log->wr("WebSocket connection error. Firing disconn event.\n");
+		onDisconnection();
 	});
 	wsh->onConnection([this](WebSocket<CLIENT>* wsocket, HttpRequest req) {
 		log->type(LOG_CONN);
@@ -154,13 +154,13 @@ void NTClient::addListeners() {
 	wsh->onDisconnection([this](WebSocket<CLIENT>* wsocket, int code, char* msg, size_t len) {
 		log->type(LOG_CONN);
 		log->wr("Disconnected from the realtime server.\n");
-		onDisconnection(wsocket, code, msg, len);
+		onDisconnection();
 	});
 	wsh->onMessage([this](WebSocket<CLIENT>* ws, char* msg, size_t len, OpCode opCode) {
 		onMessage(ws, msg, len, opCode);
 	});
 }
-void NTClient::onDisconnection(WebSocket<CLIENT>* wsocket, int code, char* msg, size_t len) {
+void NTClient::onDisconnection(void) {
 	/*
 	cout << "Disconn message: " << string(msg, len) << endl;
 	cout << "Disconn code: " << code << endl;

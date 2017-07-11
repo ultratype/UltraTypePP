@@ -12,8 +12,7 @@
 #include <vector>
 using namespace std;
 vector<Account> accounts;
-vector<thread> threads;
-std::mutex tlock;
+mutex tlock;
 
 void initlog(string msg) {
 	cout << CLR_GRN << STYLE_BOLD << "[INIT] " << CLR_RESET << CLR_WHT << msg << CLR_RESET;
