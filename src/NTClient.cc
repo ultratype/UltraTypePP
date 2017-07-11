@@ -9,7 +9,6 @@ NTClient::NTClient(int _wpm, double _accuracy) {
 	firstConnect = true;
 	connected = false;
 	lessonLen = 0;
-	lidx = 0;
 	log = new NTLogger("(Not logged in)");
 	wsh = nullptr;
 	racesCompleted = 0;
@@ -164,9 +163,9 @@ void NTClient::onDisconnection(WebSocket<CLIENT>* wsocket, int code, char* msg, 
 	cout << "Disconn message: " << string(msg, len) << endl;
 	cout << "Disconn code: " << code << endl;
 	*/
-	lidx = 0;
 	rIdx = 0;
 	eIdx = 0;
+	raceFinished = false;
 	log->type(LOG_CONN);
 	log->wr("Reconnecting to the realtime server...\n");
 	getPrimusSID();
@@ -207,7 +206,6 @@ void NTClient::handleData(WebSocket<CLIENT>* ws, json* j) {
 		log->wr("The race has started.\n");
 		lesson = j->operator[]("payload")["l"];
 		lessonLen = lesson.length();
-		lidx = 0;
 		log->type(LOG_INFO);
 		log->wr("Lesson length: ");
 		log->operator<<(lessonLen);
@@ -256,9 +254,9 @@ void NTClient::onMessage(WebSocket<CLIENT>* ws, char* msg, size_t len, OpCode op
 void NTClient::onConnection(WebSocket<CLIENT>* wsocket, HttpRequest req) {
 	// Send a probe, which is required for connection
 	wsocket->send("2probe", OpCode::TEXT);
-	lidx = 0;
 	rIdx = 0;
 	eIdx = 0;
+	raceFinished = false;
 }
 void NTClient::sendTypePacket(WebSocket<CLIENT>* ws, int idx, string typeType) {
 	json p = {
@@ -272,7 +270,7 @@ void NTClient::sendTypePacket(WebSocket<CLIENT>* ws, int idx, string typeType) {
 	ws->send(packet.c_str(), OpCode::TEXT);
 }
 void NTClient::type(WebSocket<CLIENT>* ws) {
-	if (lidx > lessonLen) {
+	if (rIdx > lessonLen) {
 		// All characters have been typed
 		return;
 	}
@@ -283,14 +281,13 @@ void NTClient::type(WebSocket<CLIENT>* ws) {
 	if (low < 10) {
 		low = Utils::randInt(9, 12);
 	}
-	lidx = rIdx + eIdx;
-	if (lidx % 25 == 0) { // Display info every 25 characters
+	if (rIdx % 25 == 0) { // Display info every 25 characters
 		// Log race updated
 		log->type(LOG_INFO);
 		log->wr("I have finished ");
-		log->operator<<((((double)lidx) / ((double)lessonLen)) * 100.00);
+		log->operator<<((((double)rIdx) / ((double)lessonLen)) * 100.00);
 		log->wrs("% of the race (");
-		log->operator<<((int)lidx);
+		log->operator<<((int)rIdx);
 		log->wrs(" / ");
 		log->operator<<((int)lessonLen);
 		log->wrs(" characters at ");
@@ -298,21 +295,20 @@ void NTClient::type(WebSocket<CLIENT>* ws) {
 		log->wrs(" WPM)");
 		log->ln();
 	}
-	if (isRight) {
-		++rIdx;
-		sendTypePacket(ws, rIdx, "t");
-	} else {
+	if (!isRight) {
 		++eIdx;
 		sendTypePacket(ws, eIdx, "e");
 	}
+	++rIdx;
+	sendTypePacket(ws, rIdx, "t");
 	// cout << "rIdx " << rIdx << ", eIdx: " << eIdx << ", isRight: " << isRight << ", sleepFor: " << sleepFor << endl;
 	this_thread::sleep_for(chrono::milliseconds(sleepFor));
 	type(ws); // Call the function until the lesson has been "typed"
 }
 void NTClient::handleRaceFinish(WebSocket<CLIENT>* ws, json* j) {
+	raceFinished = true;
 	racesCompleted++;
 	int raceCompleteTime = time(0) - lastRaceStart;
-	lidx = 0;
 	rIdx = 0;
 	eIdx = 0;
 	log->type(LOG_RACE);
