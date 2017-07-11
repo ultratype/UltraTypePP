@@ -22,4 +22,4 @@ Here are the instructions for getting UltraType++ up and running:
 
 # Is this safe to use?
 UltraType++ is 100% safe to use, and your username and password will ONLY be used to log in to NitroType.<br>
-If you are skeptic and/or want proof of this, feel free to view the source code of UltraType++, or scan it with [your favorite antivirus software.](https://virustotal.com/)
+If you are skeptic and/or want proof of this, [feel free to view the source code of UltraType++](https://github.com/ultratype/UltraTypePP/tree/master/src), or scan it with [your favorite antivirus software.](https://virustotal.com/)
