@@ -64,7 +64,7 @@ bool NTClient::login(string username, string password) {
 	}
 	if (ret == false) {
 		log->type(LOG_HTTP);
-		log->wr("Failed to log in. This account is most likely banned.\n");
+		log->wr("Failed to log in.\n");
 	} else {
 		bool success = getPrimusSID();
 		if (!success) return false;

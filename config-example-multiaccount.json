@@ -1,0 +1,24 @@
+{
+	"multi_accont": true,
+	"accounts": [
+		{
+			"user": "username1",
+			"pass": "secretpassword123",
+			"wpm": 100,
+			"accuracy": 0.99
+		},
+		{
+			"user": "username2",
+			"pass": "secreterpassword123",
+			"wpm": 120,
+			"accuracy": 0.95
+		},
+		{
+			"user": "username3",
+			"pass": "secretestassword123",
+			"wpm": 120,
+			"accuracy": 0.95
+		}
+		// Add as much more accounts as you like, (after deleting this message of course)
+	]
+}
