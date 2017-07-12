@@ -1,5 +1,5 @@
 {
-	"multi_accont": false,
+	"multi_account": false,
 	"username": "username",
 	"password": "secretpassword123",
 	"wpm": 100,
