@@ -94,7 +94,7 @@ int main(int argc, char** argv) {
 	}
 	bool multiAcc = false;
 	try {
-		multiAcc = jdata["multi_accont"];
+		multiAcc = jdata["multi_account"];
 	} catch (const exception& e) {
 		errlog("Failed to detect multi account. Maybe read over it for errors?\n");
 		return 1;
