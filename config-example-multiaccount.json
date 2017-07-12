@@ -1,5 +1,5 @@
 {
-	"multi_accont": true,
+	"multi_account": true,
 	"accounts": [
 		{
 			"user": "username1",
@@ -19,6 +19,5 @@
 			"wpm": 120,
 			"accuracy": 0.95
 		}
-		// Add as much more accounts as you like, (after deleting this message of course)
 	]
 }
