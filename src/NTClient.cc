@@ -116,12 +116,12 @@ bool NTClient::getPrimusSID() {
 	if (res) {
 		try {
 			json jres = json::parse(res->body.substr(4, res->body.length()));
+			primusSid = jres["sid"];
 		} catch (const exception& e) {
 			log->type(LOG_HTTP);
 			log->wr("There was an issue parsing Primus polling info. Retrying.\n");
 			return getPrimusSID();
 		}
-		primusSid = jres["sid"];
 		log->type(LOG_HTTP);
 		log->wr("Resolved Primus SID successfully.\n");
 		// addCookie("io", primusSid);
