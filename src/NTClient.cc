@@ -114,7 +114,13 @@ bool NTClient::getPrimusSID() {
 	string path = NT_PRIMUS_ENDPOINT + queryStr;
 	shared_ptr<httplib::Response> res = loginReq.get(path.c_str(), rawCookieStr.c_str());
 	if (res) {
-		json jres = json::parse(res->body.substr(4, res->body.length()));
+		try {
+			json jres = json::parse(res->body.substr(4, res->body.length()));
+		} catch (const exception& e) {
+			log->type(LOG_HTTP);
+			log->wr("There was an issue parsing Primus polling info. Retrying.\n");
+			return getPrimusSID();
+		}
 		primusSid = jres["sid"];
 		log->type(LOG_HTTP);
 		log->wr("Resolved Primus SID successfully.\n");
@@ -245,7 +251,7 @@ void NTClient::onMessage(WebSocket<CLIENT>* ws, char* msg, size_t len, OpCode op
 			jdata = json::parse(rawJData);
 		} catch (const exception& e) {
 			// Some error parsing real race data, something must be wrong
-			cout << "There was an issue parsing server data: " << e.what() << endl;
+			cout << "There was an issue parsing server data: " << e.what() << ", ignoring it." << endl;
 			return;
 		}
 		handleData(ws, &jdata);
