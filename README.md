@@ -19,7 +19,7 @@ Here are the instructions for getting UltraType++ up and running:
 - Replace the username and password with your own, be sure to keep the quotes!
 - Enter your desired WPM and accuracy. Please note the accuracy MUST be a decimal.
 - Linux: Read the README on details to run UltraType++.
-- Windows: Double click `UltraType++.exe` to start UltraType++.
+- Windows: Double click `Start.bat` to start UltraType++.
 
 # Is this safe to use?
 UltraType++ is 100% safe to use, and your username and password will ONLY be used to log in to NitroType.<br>
