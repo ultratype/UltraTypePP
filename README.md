@@ -6,7 +6,7 @@ UltraType++ is a complete NitroType bot, written in C++. It will race on any acc
 Here is a list of features that UltraType++ supports:
 - Easy to use and configure. All you have to do is download UltraType++ and modify the configuration file to get it up and running.
 - Customizable WPM and accuracy.
-- UltraType++ uses almost 1000% less CPU and memory than NitroType does.
+- UltraType++ uses almost 90% less CPU and memory than NitroType does.
 - Multiple account support, so you can run as much accounts as you want on the same UltraType++ process, completely automated.
 - Colorful / vibrant logging.
 
