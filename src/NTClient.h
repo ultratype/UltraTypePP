@@ -36,6 +36,7 @@ public:
 	NTClient(int, double);
 	~NTClient();
 	bool login(string, string);
+	bool login(string);
 	bool connect();
 	// Typing options
 	int typeIntervalMS;

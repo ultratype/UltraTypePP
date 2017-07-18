@@ -71,6 +71,10 @@ bool NTClient::login(string username, string password) {
 	}
 	return ret;
 }
+bool NTClient::login(string _token) {
+	token = _token;
+	return false;
+}
 bool NTClient::connect() {
 	wsh = new Hub();
 	time_t tnow = time(0);
