@@ -32,17 +32,25 @@ bool NTClient::login(string username, string password) {
 	uname = username;
 	pword = password;
 	bool ret = true;
-	string data = string("username=");
-	data += uname;
-	data += "&password=";
-	data += pword;
-	data += "&adb=1&tz=America%2FChicago"; // No need to have anything other than Chicago timezone
+	httplib::Params params;
+	params.insert(make_pair("username", uname));
+	params.insert(make_pair("password", pword));
+	params.insert(make_pair("adb", "0"));
+	params.insert(make_pair("tz", "America/Chicago"));
+
+	httplib::Headers headers;
+	headers.insert(make_pair("content-type", "application/x-www-form-urlencoded; charset=UTF-8"));
+	headers.insert(make_pair("user-agent", "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.94 Safari/537.36"));
+	headers.insert(make_pair("x-requested-with", "XMLHttpRequest"));
+
 	httplib::SSLClient loginReq(NITROTYPE_HOSTNAME, HTTPS_PORT);
-	shared_ptr<httplib::Response> res = loginReq.post(NT_LOGIN_ENDPOINT, data, "application/x-www-form-urlencoded; charset=UTF-8");
+	shared_ptr<httplib::Response> res = loginReq.post(NT_LOGIN_ENDPOINT, headers, params);
 	if (res) {
 		bool foundLoginCookie = false;
-		for (int i = 0; i < res->cookies.size(); ++i) {
-			string cookie = res->cookies.at(i);
+		string cookieStr = res->headers.find("set-cookie")->second;
+		vector<string> cookies = Utils::split(cookieStr, ';');
+		for (int i = 0; i < cookies.size(); ++i) {
+			string cookie = cookies.at(i);
 			addCookie(Utils::extractCKey(cookie), Utils::extractCValue(cookie));
 			if (cookie.find("ntuserrem=") == 0) {
 				foundLoginCookie = true;
@@ -116,7 +124,9 @@ bool NTClient::getPrimusSID() {
 
 	httplib::SSLClient loginReq(NT_REALTIME_HOST, HTTPS_PORT);
 	string path = NT_PRIMUS_ENDPOINT + queryStr;
-	shared_ptr<httplib::Response> res = loginReq.get(path.c_str(), rawCookieStr.c_str());
+	httplib::Headers getHeaders;
+	getHeaders.insert(make_pair("cookie", rawCookieStr.c_str()));
+	shared_ptr<httplib::Response> res = loginReq.get(path.c_str(), getHeaders);
 	if (res) {
 		try {
 			json jres = json::parse(res->body.substr(4, res->body.length()));
